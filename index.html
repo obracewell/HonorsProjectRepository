@@ -10,16 +10,15 @@
             const d = parseFloat(document.getElementById("d").value);
             const c = parseFloat(document.getElementById("c").value);
             const a = parseFloat(document.getElementById("a").value);
+            const h = d + 2;
             
             const canvas = document.getElementById("plotCanvas");
             const ctx = canvas.getContext("2d");
-            canvas.width = 600;
-            canvas.height = 150;
+            canvas.width = 800;
+            canvas.height = 400;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.translate(50, canvas.height - 10); 
-            ctx.scale(1, -1);
             
-            function drawLine(x1, y1, x2, y2, color = "black", lineWidth = 1, dash = []) {
+            function drawLine(x1, y1, x2, y2, color = "black", lineWidth = 2, dash = []) {
                 ctx.beginPath();
                 ctx.setLineDash(dash);
                 ctx.lineWidth = lineWidth;
@@ -30,26 +29,54 @@
                 ctx.setLineDash([]);
             }
             
-            function drawEllipse(cx, cy, rx, ry, color = "black") {
-                ctx.beginPath();
-                ctx.ellipse(cx, cy, rx, ry, 0, 0, 2 * Math.PI);
-                ctx.strokeStyle = color;
-                ctx.stroke();
+            function scaleX(x) {
+                return (x + 0.05) * 600 + 50;
+            }
+            function scaleY(y) {
+                return 350 - (y / (h + 2)) * 300;
             }
             
-            drawLine(10, 10, 10, d * 5, "black"); 
-            drawLine(20, 10, 20, d * 5, "black");
-            drawLine(30, 10, 30, d * 5, "black");
-            drawLine(40, 10, 40, d * 5, "black");
-            drawLine(20, 10, 40, c * 5, "green");
-            drawLine(10, 10, 10, d * 5, "blue", 1, [5, 5]); 
-            drawLine(10, 80, 40, 80, "blue", 1, [5, 5]);
-            drawLine(30, d * 2, 40, d * 2, "red"); 
-            drawLine(30, d * 2.2, 40, d * 2.2, "red");
-            drawLine(30, d * 2.4, 40, d * 2.4, "red");
-            drawLine(30, d * 2.6, 40, d * 2.6, "red");
-            drawLine(30, d * 2.8, 40, d * 2.8, "red");
-            drawEllipse(15, a * 2, 3, 3);
+            for (let y = 0; y <= h; y += 0.1) {
+                drawLine(scaleX(-0.03 - b * 0.001), scaleY(y), scaleX(-0.03), scaleY(y), "black");
+                drawLine(scaleX(-0.03), scaleY(y), scaleX(0), scaleY(y), "black");
+                drawLine(scaleX(0), scaleY(y), scaleX(0.03), scaleY(y), "black");
+            }
+            
+            for (let x = -0.03 - b * 0.001; x <= 0.03; x += 0.001) {
+                drawLine(scaleX(x), scaleY(0), scaleX(x), scaleY(h), "black");
+            }
+            
+            for (let y = 0; y <= h; y += 0.1) {
+                let xVal = (y - h) / (c / 0.003) + 0.003;
+                drawLine(scaleX(xVal), scaleY(y), scaleX(xVal + 0.001), scaleY(y), "green");
+            }
+            
+            drawLine(scaleX(-0.03 - b * 0.001), scaleY(0), scaleX(-0.03), scaleY(0), "black");
+            drawLine(scaleX(-0.03 - b * 0.001), scaleY(h), scaleX(-0.03), scaleY(h), "black");
+            drawLine(scaleX(-0.03 - b * 0.001), scaleY(h - c), scaleX(-0.03), scaleY(h - c), "blue", 2, [5, 5]);
+            drawLine(scaleX(-0.03 - b * 0.001), scaleY(h - a), scaleX(-0.03), scaleY(h - a), "red", 2, [2, 2]);
+            
+            for (let x = -0.02; x <= 0.06; x += 0.001) {
+                drawLine(scaleX(x), scaleY(h - c), scaleX(x), scaleY(0), "blue", 2, [5, 5]);
+            }
+            
+            for (let x = 0.03; x <= 0.04; x += 0.001) {
+                drawLine(scaleX(x), scaleY(h - d), scaleX(x), scaleY(h - d), "blue");
+            }
+            
+            for (let x = 0.03; x <= 0.035; x += 0.001) {
+                for (let i = 0; i < 5; i++) {
+                    drawLine(scaleX(x), scaleY(h - a * (i / 5)), scaleX(x + 0.005), scaleY(h - a * (i / 5)), "red");
+                }
+            }
+            
+            for (let y = h - a; y <= h; y += 0.1) {
+                drawLine(scaleX(0.035), scaleY(y), scaleX(0.035), scaleY(y), "red");
+            }
+            
+            for (let x = 0.035; x <= 0.045; x += 0.001) {
+                drawLine(scaleX(x), scaleY(h - a / 2), scaleX(x), scaleY(h - a / 2), "blue");
+            }
         }
     </script>
 </head>
@@ -66,3 +93,4 @@
     <canvas id="plotCanvas" style="border:1px solid #ccc;"></canvas>
 </body>
 </html>
+
