@@ -39,6 +39,10 @@
     <p>ANALYSIS AT FAILURE</p>
     <p>This program calculates a, c, the tension strain in steel, the maximum internal moment, and the design capacity moment.</p>
 
+   //<img src="https://github.com/obracewell/RCanalysiscalculator/blob/main/assets/section1.png?raw=true" alt="Stress Analysis Diagram" class="image" />
+    
+    <p>Input the following values:</p>
+    
     <label for="fc">Compressive stress of concrete (psi): </label>
     <input type="number" id="fc"><br>
 
@@ -59,7 +63,6 @@
     <div id="output" class="output"></div>
     <h2>Graph</h2>
     <div id="graph" style="width: 800px; height: 600px;"></div>
-    <button onclick="downloadGraph()">Download Graph as Image</button>
 
     <script>
         function performAnalysis() {
@@ -229,7 +232,7 @@
                 x: [0.035, 0.045],
                 y: [h - a * 0.5, h - a * 0.5],
                 mode: 'lines',
-                line: {color: 'purple'},
+                line: {color: 'red'},
                 name: 'Compressive Force in Concrete'
             },
             {
@@ -280,15 +283,6 @@
             Plotly.newPlot('graph', traces, layout, {staticPlot: true});
         }
 
-        function downloadGraph() {
-            Plotly.toImage(document.getElementById('graph'), {format: 'png'}).then(function(dataUrl) {
-                const a = document.createElement('a');
-                a.href = dataUrl;
-                a.download = 'graph.png';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            });
         }
     </script>
 </body>
