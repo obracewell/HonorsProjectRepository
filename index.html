@@ -36,10 +36,10 @@
 </head>
 <body>
     <h1>Phase III RC Beam Analysis Calculator</h1>
-    <p>ANALYSIS AT FAILURE</p>
+    <h2>ANALYSIS AT FAILURE</h2>
     <p>This program calculates a, c, the tension strain in steel, the maximum internal moment, and the design capacity moment.</p>
 
-   //<img src="https://github.com/obracewell/RCanalysiscalculator/blob/main/assets/section1.png?raw=true" alt="Stress Analysis Diagram" class="image" />
+   <img src="https://github.com/obracewell/RCanalysiscalculator/blob/main/assets/section1.png?raw=true" alt="Stress Analysis Diagram" class="image" />
     
     <p>Input the following values:</p>
     
@@ -61,8 +61,8 @@
     <button onclick="performAnalysis()">Calculate</button>
 
     <div id="output" class="output"></div>
-    <h2>Graph</h2>
-    <div id="graph" style="width: 800px; height: 600px;"></div>
+    <p>Section, Strain, and Stress Diagrams:</p>
+    <div id="graph" style="width: 800px; height: 400px;"></div>
 
     <script>
         function performAnalysis() {
