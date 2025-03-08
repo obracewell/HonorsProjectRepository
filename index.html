@@ -3,93 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATLAB Plot in JavaScript</title>
-    <script>
-        function drawFigure() {
-            const b = parseFloat(document.getElementById("b").value);
-            const d = parseFloat(document.getElementById("d").value);
-            const c = parseFloat(document.getElementById("c").value);
-            const a = parseFloat(document.getElementById("a").value);
-            const h = d + 2;
-            
-            const canvas = document.getElementById("plotCanvas");
-            const ctx = canvas.getContext("2d");
-            canvas.width = 800;
-            canvas.height = 400;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            function drawLine(x1, y1, x2, y2, color = "black", lineWidth = 2, dash = []) {
-                ctx.beginPath();
-                ctx.setLineDash(dash);
-                ctx.lineWidth = lineWidth;
-                ctx.strokeStyle = color;
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
-            
-            function scaleX(x) {
-                return (x + 0.05) * 600 + 50;
-            }
-            function scaleY(y) {
-                return 350 - (y / (h + 2)) * 300;
-            }
-            
-            for (let y = 0; y <= h; y += 0.1) {
-                drawLine(scaleX(-0.03 - b * 0.001), scaleY(y), scaleX(-0.03), scaleY(y), "black");
-                drawLine(scaleX(-0.03), scaleY(y), scaleX(0), scaleY(y), "black");
-                drawLine(scaleX(0), scaleY(y), scaleX(0.03), scaleY(y), "black");
-            }
-            
-            for (let x = -0.03 - b * 0.001; x <= 0.03; x += 0.001) {
-                drawLine(scaleX(x), scaleY(0), scaleX(x), scaleY(h), "black");
-            }
-            
-            for (let y = 0; y <= h; y += 0.1) {
-                let xVal = (y - h) / (c / 0.003) + 0.003;
-                drawLine(scaleX(xVal), scaleY(y), scaleX(xVal + 0.001), scaleY(y), "green");
-            }
-            
-            drawLine(scaleX(-0.03 - b * 0.001), scaleY(0), scaleX(-0.03), scaleY(0), "black");
-            drawLine(scaleX(-0.03 - b * 0.001), scaleY(h), scaleX(-0.03), scaleY(h), "black");
-            drawLine(scaleX(-0.03 - b * 0.001), scaleY(h - c), scaleX(-0.03), scaleY(h - c), "blue", 2, [5, 5]);
-            drawLine(scaleX(-0.03 - b * 0.001), scaleY(h - a), scaleX(-0.03), scaleY(h - a), "red", 2, [2, 2]);
-            
-            for (let x = -0.02; x <= 0.06; x += 0.001) {
-                drawLine(scaleX(x), scaleY(h - c), scaleX(x), scaleY(0), "blue", 2, [5, 5]);
-            }
-            
-            for (let x = 0.03; x <= 0.04; x += 0.001) {
-                drawLine(scaleX(x), scaleY(h - d), scaleX(x), scaleY(h - d), "blue");
-            }
-            
-            for (let x = 0.03; x <= 0.035; x += 0.001) {
-                for (let i = 0; i < 5; i++) {
-                    drawLine(scaleX(x), scaleY(h - a * (i / 5)), scaleX(x + 0.005), scaleY(h - a * (i / 5)), "red");
-                }
-            }
-            
-            for (let y = h - a; y <= h; y += 0.1) {
-                drawLine(scaleX(0.035), scaleY(y), scaleX(0.035), scaleY(y), "red");
-            }
-            
-            for (let x = 0.035; x <= 0.045; x += 0.001) {
-                drawLine(scaleX(x), scaleY(h - a / 2), scaleX(x), scaleY(h - a / 2), "blue");
-            }
+    <title>Phase III RC Beam Analysis Calculator</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
-    </script>
+        input {
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+        }
+        .output {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .success {
+            color: black;
+            font-weight: bold;
+        }
+        .image {
+            width: 280px;
+            height: auto;
+        } 
+    </style>
 </head>
 <body>
-    <label for="b">b:</label>
-    <input type="number" id="b" value="12" step="0.1">
-    <label for="d">d:</label>
-    <input type="number" id="d" value="22" step="0.1">
-    <label for="c">c:</label>
-    <input type="number" id="c" value="8.65" step="0.1">
-    <label for="a">a:</label>
-    <input type="number" id="a" value="7.35" step="0.1">
-    <button onclick="drawFigure()">Update Figure</button>
-    <canvas id="plotCanvas" style="border:1px solid #ccc;"></canvas>
+    <h1>Phase III RC Beam Analysis Calculator</h1>
+    <p>ANALYSIS AT FAILURE</p>
+    <p>This program calculates a, c, the tension strain in steel, the maximum internal moment, and the design capacity moment.</p>
+
+    <label for="fc">Compressive stress of concrete (psi): </label>
+    <input type="number" id="fc"><br>
+
+    <label for="fy">Yield stress of steel (psi): </label>
+    <input type="number" id="fy"><br>
+
+    <label for="As">Cross-sectional area of steel (in<sup>2</sup>): </label>
+    <input type="number" id="As"><br>
+
+    <label for="d">Depth of steel (in): </label>
+    <input type="number" id="d"><br>
+
+    <label for="b">Length of the base (in): </label>
+    <input type="number" id="b"><br>
+
+    <button onclick="performAnalysis()">Calculate</button>
+
+    <div id="output" class="output"></div>
+    <h2>Graph</h2>
+    <div id="graph" style="width: 800px; height: 600px;"></div>
+    <button onclick="downloadGraph()">Download Graph as Image</button>
+
+    <script>
+        function performAnalysis() {
+            const fc = parseFloat(document.getElementById('fc').value);
+            const fy = parseFloat(document.getElementById('fy').value);
+            const As = parseFloat(document.getElementById('As').value);
+            const d = parseFloat(document.getElementById('d').value);
+            const b = parseFloat(document.getElementById('b').value);
+
+            if (isNaN(fc) || isNaN(fy) || isNaN(As) || isNaN(d) || isNaN(b)) {
+                alert("Please enter all values.");
+                return;
+            }
+
+            let b1 = (fc <= 4000) ? 0.85 : (fc < 8000) ? 0.85 - ((fc - 4000) / 1000) * 0.05 : 0.65;
+            const a = (As * fy) / (0.85 * fc * b);
+            const c = a / b1;
+            plotGraph(b, d, c, a);
+        }
+        
+        function plotGraph(b, d, c, a) {
+            const h = d + 2;
+            const x_range = [-0.03 - b * 0.001, -0.03, 0.06];
+
+            const traces = [
+            {
+                x: [-0.03 - b * 0.001, -0.03],
+                y: [0, 0],
+                mode: 'lines',
+                line: {color: 'black'},
+                name: 'Section_base',
+                showlegend: false
+            },
+            {
+                x: [-0.03 - b * 0.001, -0.03],
+                y: [h, h],
+                mode: 'lines',
+                line: {color: 'black'},
+                name: 'Section_top',
+                showlegend: false
+            },
+            {
+                x: [(-0.03 - b * 0.001), (-0.03 - b * 0.001)],
+                y: [0, h],
+                mode: 'lines',
+                line: {color: 'black'},
+                name: 'Section_left',
+                showlegend: false
+            },
+            {
+                x: [-0.03, -0.03],
+                y: [0, h],
+                mode: 'lines',
+                line: {color: 'black'},
+                name: 'Section_right',
+                showlegend: false
+            },
+            {
+                x: [0, 0],
+                y: [0, h],
+                mode: 'lines',
+                line: {color: 'black'},
+                name: 'Strain_axis',
+                showlegend: false
+            },
+            {
+                x: [0.03, 0.03],
+                y: [0, h],
+                mode: 'lines',
+                line: {color: 'black'},
+                name: 'Stress_axis',
+                showlegend: false
+            },
+            {
+                x: [-0.02, 0.06],
+                y: [0, 0],
+                mode: 'lines',
+                line: {color: 'black'},
+                name: 'Bottom_axis',
+                showlegend: false
+            },
+            {
+                x: [-0.02, 0.06],
+                y: [h, h],
+                mode: 'lines',
+                line: {color: 'black'},
+                name: 'Top_axis',
+                showlegend: false
+            },
+            {
+                x: [-0.03 - b * 0.001, -0.03],
+                y: [h - c, h - c],
+                mode: 'lines',
+                line: {color: 'black', dash: 'dash'},
+                name: 'Neutral Axis: c'
+            },
+            {
+                x: [-0.03 - b * 0.001, -0.03],
+                y: [h - a, h - a],
+                mode: 'lines',
+                line: {color: 'blue', dash: 'dot'},
+                name: 'Compression Concrete Depth: a'
+            },
+            {
+                x: [-0.02, 0.06],
+                y: [h - c, h - c],
+                mode: 'lines',
+                line: {color: 'black', dash: 'dash'},
+                name: 'Diagram_c',
+                showlegend: false
+            },
+            {
+                x: [0.03, 0.035],
+                y: [h - a, h - a],
+                mode: 'lines',
+                line: {color: 'blue'},
+                name: 'Whitney Stress Block'
+            },
+            {
+                x: [0.03, 0.035],
+                y: [h - a * 0.2, h - a * 0.2],
+                mode: 'lines',
+                line: {color: 'blue'},
+                name: 'Diagram_a1',
+                showlegend: false
+            },
+            {
+                x: [0.03, 0.035],
+                y: [h - a * 0.4, h - a * 0.4],
+                mode: 'lines',
+                line: {color: 'blue'},
+                name: 'Diagram_a2',
+                showlegend: false
+            },
+            {
+                x: [0.03, 0.035],
+                y: [h - a * 0.6, h - a * 0.6],
+                mode: 'lines',
+                line: {color: 'blue'},
+                name: 'Diagram_a3',
+                showlegend: false
+            },
+            {
+                x: [0.03, 0.035],
+                y: [h - a * 0.8, h - a * 0.8],
+                mode: 'lines',
+                line: {color: 'blue'},
+                name: 'Diagram_a4',
+                showlegend: false
+            },
+            {
+                x: [0.035, 0.035],
+                y: [h - a, h],
+                mode: 'lines',
+                line: {color: 'blue'},
+                name: 'Diagram_aV',
+                showlegend: false
+            },
+            {
+                x: [0.03, 0.04],
+                y: [h - d, h - d],
+                mode: 'lines',
+                line: {color: 'purple'},
+                name: 'Tensile Force in Steel'
+            },
+            {
+                x: [0.035, 0.045],
+                y: [h - a * 0.5, h - a * 0.5],
+                mode: 'lines',
+                line: {color: 'purple'},
+                name: 'Compressive Force in Concrete'
+            },
+            {
+              x: [],
+                y: [],
+                mode: 'lines',
+                line: {color: 'green'},
+                name: 'Strain Line'
+            }
+        ];
+
+        // Calculate x-values based on y-values
+        var xValues = [];
+        var yValues = [];
+        for (var y = 0; y <= h; y += 0.01) { // Adjust step size as needed
+            var x = (0.003 / c) * (y - h) + 0.003;
+            xValues.push(x);
+            yValues.push(y);
+        }
+
+        traces[19].x = xValues;
+        traces[19].y = yValues;
+
+            const layout = {
+                xaxis: { showticklabels: false, visible: false, scaleanchor: 'y', scaleratio: 1000 },
+                yaxis: { showticklabels: false, visible: false, scaleanchor: 'x', scaleratio: 1 },
+                showlegend: true,
+                paper_bgcolor: "white",
+                plot_bgcolor: "white"
+            };
+
+      // Define the circle shape
+        var circle = {
+            type: 'circle',
+            xref: 'x',
+            yref: 'y',
+            x0: -(61 + b)/2000, // left x-coordinate
+            y0: h - d - 0.5,            // bottom y-coordinate
+            x1: -(59 + b)/2000, // right x-coordinate
+            y1: h - d + 0.5,            // top y-coordinate
+            line: {color: 'grey'}
+        };
+
+        // Define the layout with the circle shape
+        layout.shapes = [circle];
+
+          
+            Plotly.newPlot('graph', traces, layout, {staticPlot: true});
+        }
+
+        function downloadGraph() {
+            Plotly.toImage(document.getElementById('graph'), {format: 'png'}).then(function(dataUrl) {
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = 'graph.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+        }
+    </script>
 </body>
 </html>
