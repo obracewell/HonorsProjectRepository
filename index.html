@@ -248,33 +248,60 @@
 
             const traces = [
                 {
-                    x: [-0.03 - beff * 0.001, -0.03],
-                    y: [0, 0],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03 - beff * 0.001, -0.03],
+                    x: [-0.03 - beff * 0.001, -0.03], //top flange - top horizaontal line
                     y: [h, h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
                 },
                 {
-                    x: [(-0.03 - beff * 0.001), (-0.03 - beff * 0.001)],
-                    y: [0, h],
+                    x: [-0.03 - beff * 0.001, -0.03 - beff * 0.001], // Top flange - left vertical edge
+                    y: [h - hf, h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
                 },
                 {
-                    x: [-0.03, -0.03],
-                    y: [0, h],
+                    x: [-0.03, -0.03], // Top flange - right vertical edge
+                    y: [h - hf, h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
                 },
+                {
+                    x: [-0.03 - beff * 0.001, -0.03 - ((beff - bw) * 0.001)], // Bottom flange - left segment (break before web)
+                    y: [h - hf, h - hf],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.03 - ((beff - bw) * 0.001) + bw * 0.001, -0.03], // Bottom flange - right segment (break after web)
+                    y: [h - hf, h - hf],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.03 - ((beff - bw) * 0.001), -0.03 - ((beff - bw) * 0.001)], // Stem - left vertical edge
+                    y: [0, h - hf],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.03 - ((beff - bw) * 0.001) + bw * 0.001, -0.03 - ((beff - bw) * 0.001) + bw * 0.001], // Stem - right vertical edge
+                    y: [0, h - hf],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.03 - ((beff - bw) * 0.001), -0.03 - ((beff - bw) * 0.001) + bw * 0.001], // Stem - bottom horizontal line
+                    y: [0, 0],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
                 {
                     x: [0, 0],
                     y: [0, h],
