@@ -86,13 +86,13 @@
     <label for="d">Depth of steel (in): </label>
     <input type="number" id="d"><br>
 
-    <label for="b">Width of web (in): </label>
+    <label for="bw">Width of web (in): </label>
     <input type="number" id="bw"><br>
 
-    <label for="b">Effective width (in): </label>
+    <label for="beff">Effective width (in): </label>
     <input type="number" id="beff"><br>
 
-    <label for="b">Height of flange (in): </label>
+    <label for="hf">Height of flange (in): </label>
     <input type="number" id="hf"><br>
     
     <button onclick="performAnalysis()">Calculate</button>
@@ -179,11 +179,12 @@
             }
             
             // Solve for a
+            let a;
             if (caseNumber == 1) {
-                const a = Ac/beff;
+                a = Ac/beff;
                 output += `a = ${a.toFixed(2)} in\n`;
             } else {
-                const a = hf + ((Ac - Af)/bw);
+                a = hf + ((Ac - Af)/bw);
                 output += `a = ${a.toFixed(2)} in\n`;
             }
 
@@ -212,14 +213,15 @@
             }
 
             // Solve for maximum internal moment
+            let Mn;
             if (caseNumber == 1) {
-                const Mn = As * fy * (d - (a / 2)) * (1 / 12000);
+                Mn = As * fy * (d - (a / 2)) * (1 / 12000);
                 output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
             } else {
                 const yc = ((Af * (hf / 2)) + ((a - hf) * bw) * (hf + (0.5 * (a - hf))))/Ac;
-                const Mn = As * fy * (d-yc) * (1/12000);
+                Mn = As * fy * (d-yc) * (1/12000);
                 output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
-           
+                } 
             // Solve for usable/design capacity
             const descap = phi * Mn;
             output += `Usable/design capacity: &#934M<sub>n</sub> = ${descap.toFixed(2)} k·ft\n`;
@@ -237,10 +239,10 @@
             document.getElementById('output').innerHTML = finalOutput;
 
             // Plot the graph
-            plotGraph(b, d, c, a);
+            plotGraph(beff, d, c, a);
         }
 
-        function plotGraph(b, d, c, a) {
+        function plotGraph(beff, d, c, a) {
             const h = d + 2;
             const x_range = [-0.03 - beff * 0.001, -0.03, 0.06];
 
