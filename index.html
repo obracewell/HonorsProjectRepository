@@ -137,7 +137,7 @@
             }
             
             // Validate inputs
-            if (isNaN(fc) || isNaN(fy) || isNaN(As) || isNaN(d) || isNaN(bw)) || isNaN(beff)) || isNaN(hf)) {
+            if (isNaN(fc) || isNaN(fy) || isNaN(As) || isNaN(d) || isNaN(bw) || isNaN(beff) || isNaN(hf)) {
                 alert("Please enter all values.");
                 return;
             }
@@ -156,8 +156,8 @@
             }
 
             // Check if As exceeds minimum value
-            const Asmin1 = (3 * Math.sqrt(fc) * b * d) / fy;
-            const Asmin2 = (200 * b * d) / fy;
+            const Asmin1 = (3 * Math.sqrt(fc) * bw * d) / fy;
+            const Asmin2 = (200 * bw * d) / fy;
             const Asmin = Math.max(Asmin1, Asmin2);
             
             if (As < Asmin) {
@@ -169,12 +169,13 @@
 
             //check which t-beam case it is
             const Af = hf * beff;
-            const Ac = (As*fs)/(0.85*fc);
+            const Ac = (As*fy)/(0.85*fc);
 
+            let caseNumber;
             if (Ac <= Af) {
-                let caseNumber = 1;
+                caseNumber = 1;
             } else { 
-                let caseNumber = 2;
+                caseNumber = 2;
             }
             
             // Solve for a
@@ -215,12 +216,10 @@
                 const Mn = As * fy * (d - (a / 2)) * (1 / 12000);
                 output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
             } else {
-                const yc = ((Af*(hf/2))+((a-hf)*bw)(hf+(0.5*(a-hf))))/Ac;
+                const yc = ((Af * (hf / 2)) + ((a - hf) * bw) * (hf + (0.5 * (a - hf))))/Ac;
                 const Mn = As * fy * (d-yc) * (1/12000);
                 output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
-            
-            output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
-
+           
             // Solve for usable/design capacity
             const descap = phi * Mn;
             output += `Usable/design capacity: &#934M<sub>n</sub> = ${descap.toFixed(2)} k·ft\n`;
