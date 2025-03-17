@@ -300,7 +300,7 @@
                     showlegend: false
                 },
                 {
-                    x: [-0.03 - ((beff - bw) * 0.001), -0.03 - ((beff - bw) * 0.001) + bw * 0.001], // Stem - bottom horizontal line
+                    x: [-0.03 - 0.0005*beff - 0.0005*bw, -0.03 - 0.0005*beff + 0.0005*bw], // Stem - bottom horizontal line
                     y: [0, 0],
                     mode: 'lines',
                     line: { color: 'black' },
