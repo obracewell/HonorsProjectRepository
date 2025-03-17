@@ -174,8 +174,10 @@
             let caseNumber;
             if (Ac <= Af) {
                 caseNumber = 1;
+                let ba = beff;
             } else { 
                 caseNumber = 2;
+                let ba = bw;
             }
             
             // Solve for a
@@ -240,10 +242,10 @@
             document.getElementById('output').innerHTML = finalOutput;
 
             // Plot the graph
-            plotGraph(beff, d, c, a);
+            plotGraph(beff, bw, hf, d, c, a);
         }
 
-        function plotGraph(beff, d, c, a) {
+        function plotGraph(beff, bw, hf, d, c, a) {
             const h = d + 2;
             const x_range = [-0.03 - beff * 0.001, -0.03, 0.06];
 
@@ -257,14 +259,14 @@
                 },
                 {
                     x: [-0.03 - beff * 0.001, -0.03 - beff * 0.001], // Top flange - left vertical edge
-                    y: [h - hf, h],
+                    y: [(h - hf), h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
                 },
                 {
                     x: [-0.03, -0.03], // Top flange - right vertical edge
-                    y: [h - hf, h],
+                    y: [(h - hf), h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
