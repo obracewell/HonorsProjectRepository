@@ -242,25 +242,25 @@
 
         function plotGraph(b, d, c, a) {
             const h = d + 2;
-            const x_range = [-0.03 - b * 0.001, -0.03, 0.06];
+            const x_range = [-0.03 - beff * 0.001, -0.03, 0.06];
 
             const traces = [
                 {
-                    x: [-0.03 - b * 0.001, -0.03],
+                    x: [-0.03 - beff * 0.001, -0.03],
                     y: [0, 0],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
                 },
                 {
-                    x: [-0.03 - b * 0.001, -0.03],
+                    x: [-0.03 - beff * 0.001, -0.03],
                     y: [h, h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
                 },
                 {
-                    x: [(-0.03 - b * 0.001), (-0.03 - b * 0.001)],
+                    x: [(-0.03 - beff * 0.001), (-0.03 - beff * 0.001)],
                     y: [0, h],
                     mode: 'lines',
                     line: { color: 'black' },
@@ -411,9 +411,9 @@
                 type: 'circle',
                 xref: 'x',
                 yref: 'y',
-                x0: -(61 + b) / 2000,
+                x0: -(61 + beff) / 2000,
                 y0: h - d - 0.5,
-                x1: -(59 + b) / 2000,
+                x1: -(59 + beff) / 2000,
                 y1: h - d + 0.5,
                 line: { color: 'grey' }
             };
