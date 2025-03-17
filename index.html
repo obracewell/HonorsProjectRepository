@@ -221,7 +221,8 @@
                 const yc = ((Af * (hf / 2)) + ((a - hf) * bw) * (hf + (0.5 * (a - hf))))/Ac;
                 Mn = As * fy * (d-yc) * (1/12000);
                 output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
-                } 
+                }
+            
             // Solve for usable/design capacity
             const descap = phi * Mn;
             output += `Usable/design capacity: &#934M<sub>n</sub> = ${descap.toFixed(2)} k·ft\n`;
@@ -425,8 +426,9 @@
                 xValues.push(x);
                 yValues.push(y);
             }
-            traces[19].x = xValues;
-            traces[19].y = yValues;
+            const strainTrace = traces.find(t => t.name === 'Strain Lines');
+                strainTrace.x = xValues;
+                strainTrace.y = yValues;
 
             const layout = {
                 xaxis: { showticklabels: false, visible: false, scaleanchor: 'y', scaleratio: 1000 },
