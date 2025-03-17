@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phase III RC Beam Analysis Calculator</title>
+    <title>RC Beam Analysis Calculator - Singly Reinforced T-Beam</title>
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     <style>
         body {
@@ -31,17 +31,27 @@
         .image {
             width: 280px;
             height: auto;
+        }
+        .centered {
+            text-align: center;
+        }
+        .centered-img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         } 
     </style>
 </head>
 <body>
-    <h1>Phase III RC Beam Analysis Calculator</h1>
-    <h2>ANALYSIS AT FAILURE</h2>
-    <p>This program calculates a, c, the tension strain in steel, the maximum internal moment, and the design capacity moment.</p>
+    <h1 class="centered">RC Beam Analysis Calculator</h1>
+    <h1 class="centered">Singly Reinforced T-Beam</h1>
+    <h2 class="centered">ANALYSIS AT FAILURE</h2>
 
-   <img src="https://github.com/obracewell/RCanalysiscalculator/blob/main/assets/section1.png?raw=true" alt="Stress Analysis Diagram" class="image" />
+    <img src="https://github.com/obracewell/RCanalysiscalculator/blob/main/assets/Tbeamlabeled.png?raw=true" 
+        alt="Stress Analysis Diagram" 
+        class="image centered-img" />
     
-    <p>Input the following values:</p>
+    <p class="success">Input the following values:</p>
     
     <label for="fc">Compressive stress of concrete (psi): </label>
     <input type="number" id="fc"><br>
@@ -52,209 +62,342 @@
     <label for="As">Cross-sectional area of steel (in<sup>2</sup>): </label>
     <input type="number" id="As"><br>
 
+    <div style="margin-left: 30px;">
+    <label for="numBars">OR </label>
+    <input type="number" id="numBars" placeholder="Number of bars">
+    <label for="barSize">#</label>
+    <select id="barSize">
+        <option value="">Select bar size</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="14">14</option>
+        <option value="18">18</option>
+    </select>
+    <br>
+    </div>
+    
     <label for="d">Depth of steel (in): </label>
     <input type="number" id="d"><br>
 
-    <label for="b">Length of the base (in): </label>
-    <input type="number" id="b"><br>
+    <label for="b">Width of web (in): </label>
+    <input type="number" id="bw"><br>
 
+    <label for="b">Effective width (in): </label>
+    <input type="number" id="beff"><br>
+
+    <label for="b">Height of flange (in): </label>
+    <input type="number" id="hf"><br>
+    
     <button onclick="performAnalysis()">Calculate</button>
 
     <div id="output" class="output"></div>
-    <p>Section, Strain, and Stress Diagrams:</p>
+   
     <div id="graph" style="width: 800px; height: 600px;"></div>
 
     <script>
+        //Bar size to area mapping
+        const barAreaTable = {
+            3: 0.11,
+            4: 0.20,
+            5: 0.31,
+            6: 0.44,
+            7: 0.60,
+            8: 0.79,
+            9: 1.00,
+            10: 1.27,
+            11: 1.56,
+            14: 2.25,
+            18: 4.00,
+        };
         function performAnalysis() {
+            // Get input values
             const fc = parseFloat(document.getElementById('fc').value);
             const fy = parseFloat(document.getElementById('fy').value);
-            const As = parseFloat(document.getElementById('As').value);
+            let As = parseFloat(document.getElementById('As').value);
             const d = parseFloat(document.getElementById('d').value);
-            const b = parseFloat(document.getElementById('b').value);
+            const bw = parseFloat(document.getElementById('bw').value);
+            const beff = parseFloat(document.getElementById('beff').value);
+            const hf = parseFloat(document.getElementById('hf').value);
 
-            if (isNaN(fc) || isNaN(fy) || isNaN(As) || isNaN(d) || isNaN(b)) {
+            // Check for bar size alternative
+            if (isNaN(As) || As === 0) {
+                const barSize = parseInt(document.getElementById('barSize').value);
+                const numBars = parseFloat(document.getElementById('numBars').value);
+
+                if (!isNaN(barSize) && barAreaTable[barSize] && !isNaN(numBars)) {
+                    As = barAreaTable[barSize] * numBars;
+                }
+            }
+            
+            // Validate inputs
+            if (isNaN(fc) || isNaN(fy) || isNaN(As) || isNaN(d) || isNaN(bw)) || isNaN(beff)) || isNaN(hf)) {
                 alert("Please enter all values.");
                 return;
             }
 
-            let b1 = (fc <= 4000) ? 0.85 : (fc < 8000) ? 0.85 - ((fc - 4000) / 1000) * 0.05 : 0.65;
-            const a = (As * fy) / (0.85 * fc * b);
+            let output = 'Results:\n\n';
+            let errorMessage = '';
+            
+            // Assign beta1 value
+            let b1;
+            if (fc <= 4000 && fc > 0) {
+                b1 = 0.85;
+            } else if (fc > 4000 && fc < 8000) {
+                b1 = 0.85 - ((fc - 4000) / 1000) * 0.05;
+            } else if (fc >= 8000) {
+                b1 = 0.65;
+            }
+
+            // Check if As exceeds minimum value
+            const Asmin1 = (3 * Math.sqrt(fc) * b * d) / fy;
+            const Asmin2 = (200 * b * d) / fy;
+            const Asmin = Math.max(Asmin1, Asmin2);
+            
+            if (As < Asmin) {
+                errorMessage += 'The cross-sectional area of the steel does NOT exceed the minimum.\n';
+                errorMessage += 'These section parameters cannot be used.\n';
+            } else {
+                output += 'The cross-sectional area exceeds the minimum.\n';
+            }
+
+            //check which t-beam case it is
+            const Af = hf * beff;
+            const Ac = (As*fs)/(0.85*fc);
+
+            if (Ac <= Af) {
+                let caseNumber = 1;
+            } else { 
+                let caseNumber = 2;
+            }
+            
+            // Solve for a
+            if (caseNumber == 1) {
+                const a = Ac/beff;
+                output += `a = ${a.toFixed(2)} in\n`;
+            } else {
+                const a = hf + ((Ac - Af)/bw);
+                output += `a = ${a.toFixed(2)} in\n`;
+            }
+
+            // Display b1
+            output += `&#946<sub>1</sub> = ${b1.toFixed(2)}\n`;
+            
+            // Solve for c
             const c = a / b1;
+            output += `c = ${c.toFixed(2)} in\n`;
+
+            // Solve for strain in steel
+            const stlstrain = ((d - c) / c) * 0.003;
+            output += `&#949<sub>t</sub> = ${stlstrain.toFixed(4)}\n`;
+
+            // Calculate phi
+            let phi;
+            if (stlstrain >= 0.005) {
+                phi = 0.9;
+                output += `&#934 = ${phi.toFixed(2)}, Ductile Section\n`;
+            } else if (stlstrain >= 0.004 && stlstrain < 0.005) {
+                phi = 0.65 + (stlstrain - 0.002) * (250 / 3);
+                output += `&#934 = ${phi.toFixed(2)}, <span style="color:orange;">Transition Zone</span>\n`;
+            } else {
+                errorMessage += 'Tension strain in steel is less than 0.004 and therefore is not ACI compliant.\n';
+                errorMessage += 'These section parameters cannot be used.\n';
+            }
+
+            // Solve for maximum internal moment
+            if (caseNumber == 1) {
+                const Mn = As * fy * (d - (a / 2)) * (1 / 12000);
+                output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
+            } else {
+                const yc = ((Af*(hf/2))+((a-hf)*bw)(hf+(0.5*(a-hf))))/Ac;
+                const Mn = As * fy * (d-yc) * (1/12000);
+                output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
+            
+            output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
+
+            // Solve for usable/design capacity
+            const descap = phi * Mn;
+            output += `Usable/design capacity: &#934M<sub>n</sub> = ${descap.toFixed(2)} k·ft\n`;
+
+
+            // Always display results
+            let finalOutput = `<span class="success">${output}</span>`;
+
+            // Append error message if exists
+            if (errorMessage) {
+                finalOutput += `<br><span class="error">${errorMessage}</span>`;
+            }
+
+            // Display in output div
+            document.getElementById('output').innerHTML = finalOutput;
+
+            // Plot the graph
             plotGraph(b, d, c, a);
         }
-        
+
         function plotGraph(b, d, c, a) {
             const h = d + 2;
             const x_range = [-0.03 - b * 0.001, -0.03, 0.06];
 
             const traces = [
-            {
-                x: [-0.03 - b * 0.001, -0.03],
-                y: [0, 0],
-                mode: 'lines',
-                line: {color: 'black'},
-                name: 'Section_base',
-                showlegend: false
-            },
-            {
-                x: [-0.03 - b * 0.001, -0.03],
-                y: [h, h],
-                mode: 'lines',
-                line: {color: 'black'},
-                name: 'Section_top',
-                showlegend: false
-            },
-            {
-                x: [(-0.03 - b * 0.001), (-0.03 - b * 0.001)],
-                y: [0, h],
-                mode: 'lines',
-                line: {color: 'black'},
-                name: 'Section_left',
-                showlegend: false
-            },
-            {
-                x: [-0.03, -0.03],
-                y: [0, h],
-                mode: 'lines',
-                line: {color: 'black'},
-                name: 'Section_right',
-                showlegend: false
-            },
-            {
-                x: [0, 0],
-                y: [0, h],
-                mode: 'lines',
-                line: {color: 'black'},
-                name: 'Strain_axis',
-                showlegend: false
-            },
-            {
-                x: [0.03, 0.03],
-                y: [0, h],
-                mode: 'lines',
-                line: {color: 'black'},
-                name: 'Stress_axis',
-                showlegend: false
-            },
-            {
-                x: [-0.02, 0.06],
-                y: [0, 0],
-                mode: 'lines',
-                line: {color: 'black'},
-                name: 'Bottom_axis',
-                showlegend: false
-            },
-            {
-                x: [-0.02, 0.06],
-                y: [h, h],
-                mode: 'lines',
-                line: {color: 'black'},
-                name: 'Top_axis',
-                showlegend: false
-            },
-            {
-                x: [-0.03 - b * 0.001, -0.03],
-                y: [h - c, h - c],
-                mode: 'lines',
-                line: {color: 'black', dash: 'dash'},
-                name: 'Neutral Axis: c'
-            },
-            {
-                x: [-0.03 - b * 0.001, -0.03],
-                y: [h - a, h - a],
-                mode: 'lines',
-                line: {color: 'blue', dash: 'dot'},
-                name: 'Compression Concrete Depth: a'
-            },
-            {
-                x: [-0.02, 0.06],
-                y: [h - c, h - c],
-                mode: 'lines',
-                line: {color: 'black', dash: 'dash'},
-                name: 'Diagram_c',
-                showlegend: false
-            },
-            {
-                x: [0.03, 0.035],
-                y: [h - a, h - a],
-                mode: 'lines',
-                line: {color: 'blue'},
-                name: 'Whitney Stress Block'
-            },
-            {
-                x: [0.03, 0.035],
-                y: [h - a * 0.2, h - a * 0.2],
-                mode: 'lines',
-                line: {color: 'blue'},
-                name: 'Diagram_a1',
-                showlegend: false
-            },
-            {
-                x: [0.03, 0.035],
-                y: [h - a * 0.4, h - a * 0.4],
-                mode: 'lines',
-                line: {color: 'blue'},
-                name: 'Diagram_a2',
-                showlegend: false
-            },
-            {
-                x: [0.03, 0.035],
-                y: [h - a * 0.6, h - a * 0.6],
-                mode: 'lines',
-                line: {color: 'blue'},
-                name: 'Diagram_a3',
-                showlegend: false
-            },
-            {
-                x: [0.03, 0.035],
-                y: [h - a * 0.8, h - a * 0.8],
-                mode: 'lines',
-                line: {color: 'blue'},
-                name: 'Diagram_a4',
-                showlegend: false
-            },
-            {
-                x: [0.035, 0.035],
-                y: [h - a, h],
-                mode: 'lines',
-                line: {color: 'blue'},
-                name: 'Diagram_aV',
-                showlegend: false
-            },
-            {
-                x: [0.03, 0.04],
-                y: [h - d, h - d],
-                mode: 'lines',
-                line: {color: 'purple'},
-                name: 'Tensile Force in Steel'
-            },
-            {
-                x: [0.035, 0.045],
-                y: [h - a * 0.5, h - a * 0.5],
-                mode: 'lines',
-                line: {color: 'red'},
-                name: 'Compressive Force in Concrete'
-            },
-            {
-              x: [],
-                y: [],
-                mode: 'lines',
-                line: {color: 'green'},
-                name: 'Strain Line'
+                {
+                    x: [-0.03 - b * 0.001, -0.03],
+                    y: [0, 0],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.03 - b * 0.001, -0.03],
+                    y: [h, h],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [(-0.03 - b * 0.001), (-0.03 - b * 0.001)],
+                    y: [0, h],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.03, -0.03],
+                    y: [0, h],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [0, 0],
+                    y: [0, h],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [0.03, 0.03],
+                    y: [0, h],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.02, 0.06],
+                    y: [0, 0],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.02, 0.06],
+                    y: [h, h],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.03 - b * 0.001, -0.03],
+                    y: [h - c, h - c],
+                    mode: 'lines',
+                    line: { color: 'black', dash: 'dash' },
+                    name: 'Neutral Axis: c'
+                },
+                {
+                    x: [-0.03 - b * 0.001, -0.03],
+                    y: [h - a, h - a],
+                    mode: 'lines',
+                    line: { color: 'blue', dash: 'dot' },
+                    name: 'Compression Concrete Depth: a'
+                },
+                {
+                    x: [-0.02, 0.06],
+                    y: [h - c, h - c],
+                    mode: 'lines',
+                    line: { color: 'black', dash: 'dash' },
+                    showlegend: false
+                },
+                {
+                    x: [0.03, 0.035],
+                    y: [h - a, h - a],
+                    mode: 'lines',
+                    line: { color: 'blue' },
+                    name: 'Whitney Stress Block'
+                },
+                {
+                    x: [0.03, 0.035],
+                    y: [h - a * 0.2, h - a * 0.2],
+                    mode: 'lines',
+                    line: { color: 'blue' },
+                    showlegend: false
+                },
+                {
+                    x: [0.03, 0.035],
+                    y: [h - a * 0.4, h - a * 0.4],
+                    mode: 'lines',
+                    line: { color: 'blue' },
+                    showlegend: false
+                },
+                {
+                    x: [0.03, 0.035],
+                    y: [h - a * 0.6, h - a * 0.6],
+                    mode: 'lines',
+                    line: { color: 'blue' },
+                    showlegend: false
+                },
+                {
+                    x: [0.03, 0.035],
+                    y: [h - a * 0.8, h - a * 0.8],
+                    mode: 'lines',
+                    line: { color: 'blue' },
+                    showlegend: false
+                },
+                {
+                    x: [0.035, 0.035],
+                    y: [h - a, h],
+                    mode: 'lines',
+                    line: { color: 'blue' },
+                    showlegend: false
+                },
+                {
+                    x: [0.03, 0.04],
+                    y: [h - d, h - d],
+                    mode: 'lines',
+                    line: { color: 'purple' },
+                    name: 'Tensile Force in Steel'
+                },
+                {
+                    x: [0.035, 0.045],
+                    y: [h - a * 0.5, h - a * 0.5],
+                    mode: 'lines',
+                    line: { color: 'red' },
+                    name: 'Compressive Force in Concrete'
+                },
+                {
+                    x: [],
+                    y: [],
+                    mode: 'lines',
+                    line: { color: 'green' },
+                    name: 'Strain Line'
+                }
+            ];
+
+            // Strain diagram points
+            var xValues = [];
+            var yValues = [];
+            for (var y = 0; y <= h; y += 0.01) {
+                var x = (0.003 / c) * (y - h) + 0.003;
+                xValues.push(x);
+                yValues.push(y);
             }
-        ];
-
-        // Calculate x-values based on y-values
-        var xValues = [];
-        var yValues = [];
-        for (var y = 0; y <= h; y += 0.01) { // Adjust step size as needed
-            var x = (0.003 / c) * (y - h) + 0.003;
-            xValues.push(x);
-            yValues.push(y);
-        }
-
-        traces[19].x = xValues;
-        traces[19].y = yValues;
+            traces[19].x = xValues;
+            traces[19].y = yValues;
 
             const layout = {
                 xaxis: { showticklabels: false, visible: false, scaleanchor: 'y', scaleratio: 1000 },
@@ -264,26 +407,22 @@
                 plot_bgcolor: "white"
             };
 
-      // Define the circle shape
-        var circle = {
-            type: 'circle',
-            xref: 'x',
-            yref: 'y',
-            x0: -(61 + b)/2000, // left x-coordinate
-            y0: h - d - 0.5,            // bottom y-coordinate
-            x1: -(59 + b)/2000, // right x-coordinate
-            y1: h - d + 0.5,            // top y-coordinate
-            line: {color: 'grey'}
-        };
+            // Steel reinforcement circle
+            var circle = {
+                type: 'circle',
+                xref: 'x',
+                yref: 'y',
+                x0: -(61 + b) / 2000,
+                y0: h - d - 0.5,
+                x1: -(59 + b) / 2000,
+                y1: h - d + 0.5,
+                line: { color: 'grey' }
+            };
 
-        // Define the layout with the circle shape
-        layout.shapes = [circle];
+            layout.shapes = [circle];
 
-          
-            Plotly.newPlot('graph', traces, layout, {staticPlot: true});
+            Plotly.newPlot('graph', traces, layout, { staticPlot: true });
         }
-
-        
     </script>
 </body>
 </html>
