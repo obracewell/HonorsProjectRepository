@@ -285,7 +285,7 @@
             document.getElementById('output').innerHTML = finalOutput;
 
             // Plot the graph
-            plotGraph(b, d, c, a);
+            plotGraph(b, d, dp, c, a);
         }
 
         function plotGraph(b, d, c, a) {
@@ -424,7 +424,7 @@
                     y: [h - a * 0.5, h - a * 0.5],
                     mode: 'lines',
                     line: { color: 'red' },
-                    name: 'Compressive Force in Concrete'
+                    name: 'Concrete Compressive Force'
                 },
                 {
                     x: [],
@@ -432,6 +432,13 @@
                     mode: 'lines',
                     line: { color: 'green' },
                     name: 'Strain Line'
+                }
+                {
+                    x: [0.035, 0.045],
+                    y: [h - dp, h - dp],
+                    mode: 'lines',
+                    line: { color: 'yellow' },
+                    name: 'Steel Compressive Force'
                 }
             ];
 
@@ -454,8 +461,8 @@
                 plot_bgcolor: "white"
             };
 
-            // Steel reinforcement circle
-            var circle = {
+            // Tension Steel reinforcement circle
+            var circle1 = {
                 type: 'circle',
                 xref: 'x',
                 yref: 'y',
@@ -466,7 +473,19 @@
                 line: { color: 'grey' }
             };
 
-            layout.shapes = [circle];
+            // Tension Steel reinforcement circle
+            var circle2 = {
+                type: 'circle',
+                xref: 'x',
+                yref: 'y',
+                x0: -(61 + b) / 2000,
+                y0: h - dp - 0.5,
+                x1: -(59 + b) / 2000,
+                y1: h - dp + 0.5,
+                line: { color: 'grey' }
+            };
+            
+            layout.shapes = [circle1, circle2];
 
             Plotly.newPlot('graph', traces, layout, { staticPlot: true });
         }
