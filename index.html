@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RC Beam Analysis Calculator - Singly Reinforced T-Beam</title>
+    <title>RC Beam Analysis Calculator - Doubly Reinforced Beam</title>
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     <style>
         body {
@@ -44,29 +44,53 @@
 </head>
 <body>
     <h1 class="centered">RC Beam Analysis Calculator</h1>
-    <h1 class="centered">Singly Reinforced T-Beam</h1>
+    <h1 class="centered">Doubly Reinforced Beam</h1>
     <h2 class="centered">ANALYSIS AT FAILURE</h2>
 
-    <img src="https://github.com/obracewell/RCanalysiscalculator/blob/main/assets/Tbeamlabeled.png?raw=true" 
-        alt="T-Beam Section Diagram" 
+    <img src="https://github.com/obracewell/RCanalysiscalculator/blob/main/assets/DRBlabeled.png?raw=true" 
+        alt="Rectangular Section DRB Diagram" 
         class="image centered-img" />
     
     <p class="success">Input the following values:</p>
     
-    <label for="fc">Compressive stress of concrete (psi): </label>
+    <label for="fc">Compressive stress of concrete, f<sub>c</sub> (psi): </label>
     <input type="number" id="fc"><br>
 
-    <label for="fy">Yield stress of steel (psi): </label>
+    <label for="fy">Yield stress of steel, f<sub>y</sub> (psi): </label>
     <input type="number" id="fy"><br>
 
-    <label for="As">Cross-sectional area of steel (in<sup>2</sup>): </label>
+    <label for="As">Cross-sectional area of tension steel, A<sub>s</sub> (in<sup>2</sup>): </label>
     <input type="number" id="As"><br>
 
     <div style="margin-left: 30px;">
-    <label for="numBars">OR </label>
-    <input type="number" id="numBars" placeholder="Number of bars">
-    <label for="barSize">#</label>
-    <select id="barSize">
+    <label for="numBarsT">OR </label>
+    <input type="number" id="numBarsT" placeholder="Number of bars">
+    <label for="barSizeT">#</label>
+    <select id="barSizeT">
+        <option value="">Select bar size</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="14">14</option>
+        <option value="18">18</option>
+    </select>
+    <br>
+    </div>
+
+    <label for="Asp">Cross-sectional area of compression steel, A<sub>s</sub>' (in<sup>2</sup>): </label>
+    <input type="number" id="Asp"><br>
+
+    <div style="margin-left: 30px;">
+    <label for="numBarsC">OR </label>
+    <input type="number" id="numBarsC" placeholder="Number of bars">
+    <label for="barSizeC">#</label>
+    <select id="barSizeC">
         <option value="">Select bar size</option>
         <option value="3">3</option>
         <option value="4">4</option>
@@ -83,18 +107,15 @@
     <br>
     </div>
     
-    <label for="d">Depth of steel (in): </label>
+    <label for="d">Depth of tension steel, d (in): </label>
     <input type="number" id="d"><br>
 
-    <label for="bw">Width of web (in): </label>
-    <input type="number" id="bw"><br>
+    <label for="dp">Depth of compression steel, d' (in): </label>
+    <input type="number" id="dp"><br>
 
-    <label for="beff">Effective width (in): </label>
-    <input type="number" id="beff"><br>
+    <label for="b">Length of the base, b (in): </label>
+    <input type="number" id="b"><br>
 
-    <label for="hf">Height of flange (in): </label>
-    <input type="number" id="hf"><br>
-    
     <button onclick="performAnalysis()">Calculate</button>
 
     <div id="output" class="output"></div>
@@ -116,28 +137,37 @@
             14: 2.25,
             18: 4.00,
         };
+        
         function performAnalysis() {
             // Get input values
             const fc = parseFloat(document.getElementById('fc').value);
             const fy = parseFloat(document.getElementById('fy').value);
             let As = parseFloat(document.getElementById('As').value);
+            let Asp = parseFloat(document.getElementById('Asp').value);
             const d = parseFloat(document.getElementById('d').value);
-            const bw = parseFloat(document.getElementById('bw').value);
-            const beff = parseFloat(document.getElementById('beff').value);
-            const hf = parseFloat(document.getElementById('hf').value);
+            const dp = parseFloat(document.getElementById('dp').value);
+            const b = parseFloat(document.getElementById('b').value);
 
             // Check for bar size alternative
             if (isNaN(As) || As === 0) {
-                const barSize = parseInt(document.getElementById('barSize').value);
-                const numBars = parseFloat(document.getElementById('numBars').value);
+                const barSizeT = parseInt(document.getElementById('barSizeT').value);
+                const numBarsT = parseFloat(document.getElementById('numBarsT').value);
 
-                if (!isNaN(barSize) && barAreaTable[barSize] && !isNaN(numBars)) {
-                    As = barAreaTable[barSize] * numBars;
+                if (!isNaN(barSizeT) && barAreaTable[barSizeT] && !isNaN(numBarsT)) {
+                    As = barAreaTable[barSizeT] * numBarsT;
+                }
+            }
+            if (isNaN(Asp) || Asp === 0) {
+                const barSizeC = parseInt(document.getElementById('barSizeC').value);
+                const numBarsC = parseFloat(document.getElementById('numBarsC').value);
+
+                if (!isNaN(barSizeC) && barAreaTable[barSizeC] && !isNaN(numBarsC)) {
+                    Asp = barAreaTable[barSizeC] * numBarsC;
                 }
             }
             
             // Validate inputs
-            if (isNaN(fc) || isNaN(fy) || isNaN(As) || isNaN(d) || isNaN(bw) || isNaN(beff) || isNaN(hf)) {
+            if (isNaN(fc) || isNaN(fy) || isNaN(As) || isNaN(Asp) || isNaN(d) || isNaN(dp) || isNaN(b)) {
                 alert("Please enter all values.");
                 return;
             }
@@ -155,53 +185,74 @@
                 b1 = 0.65;
             }
 
-            // Check if As exceeds minimum value
-            const Asmin1 = (3 * Math.sqrt(fc) * bw * d) / fy;
-            const Asmin2 = (200 * bw * d) / fy;
-            const Asmin = Math.max(Asmin1, Asmin2);
-            
-            if (As < Asmin) {
-                errorMessage += 'The cross-sectional area of the steel does NOT exceed the minimum.\n';
-                errorMessage += 'These section parameters cannot be used.\n';
-            } else {
-                output += 'The cross-sectional area exceeds the minimum.\n';
-            }
+            //Assume f's = fy and solve
+            let firsta = (fy * (As - Asp)) / (0.85 * fc * b);
+            let firstc = firsta / b1;
+            let firstcompstlstrn = ((c - dp)/c) * 0.003;
 
-            //check which t-beam case it is
-            const Af = hf * beff;
-            const Ac = (As*fy)/(0.85*fc);
-
-            let caseNumber;
-            let ba;
-            if (Ac <= Af) {
-                caseNumber = 1;
-                ba = beff;
-            } else { 
-                caseNumber = 2;
-                ba = bw;
-            }
-            
-            // Solve for a
-            let a;
-            if (caseNumber == 1) {
-                a = Ac/beff;
-                output += `a = ${a.toFixed(2)} in\n`;
+            let assumption;
+            if (firstcompstlstrn >= (fy/29000000) {
+                assumption = 1;
             } else {
-                a = hf + ((Ac - Af)/bw);
-                output += `a = ${a.toFixed(2)} in\n`;
+                assumption = 0;
             }
 
             // Display b1
             output += `&#946<sub>1</sub> = ${b1.toFixed(2)}\n`;
             
             // Solve for c
-            const c = a / b1;
-            output += `c = ${c.toFixed(2)} in\n`;
+            let c;
+            if (assumption == 1) {
+                c = firstc;
+                output += `c = ${c.toFixed(2)} in\n`;
+            } else {
+                const x = 0.85 * fc/1000 * b1 * b;
+                const y = (Asp * 29000 * 0.003) - (As * fy/1000);
+                const z = -Asp * 29000 * 0.003 * d';
+                function solveQuadratic(x, y, z) {
+                    const discriminant = y * y - 4 * x * z;
+
+                    if (discriminant < 0) {
+                        console.log("No real roots.");
+                        return null;
+                    }
+                    const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                    const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+
+                    const largerRoot = Math.max(root1, root2);
+                    return largerRoot;
+                }
+                c = largerRoot;
+                output += `c = ${c.toFixed(2)} in\n`;
+            }
+            
+            // Solve for a
+            let a;
+            if (assumption == 1) {
+                a = firsta;
+                output += `a = ${a.toFixed(2)} in\n`;
+            } else {
+                a = c * b1;
+                output += `a = ${a.toFixed(2)} in\n`;
+            }
+
+            // Solve for strain in compression steel
+            let compstlstrn;
+            let fsp;
+            if (assumption == 1) {
+                compstlstrn = firstcompstlstrn;
+                fsp = fy;
+                output += `&#949<sub>s</sub>' = ${compstlstrn.toFixed(4)}\n`;
+            } else {
+                compstlstrn = ((c - dp) / c) * 0.003;
+                fsp = 29000000 * compstlstrn;
+                output += `&#949<sub>s</sub>' = ${compstlstrn.toFixed(4)}\n`;
+            }
 
             // Solve for strain in steel
             const stlstrain = ((d - c) / c) * 0.003;
             output += `&#949<sub>t</sub> = ${stlstrain.toFixed(4)}\n`;
-
+            
             // Calculate phi
             let phi;
             if (stlstrain >= 0.005) {
@@ -216,20 +267,12 @@
             }
 
             // Solve for maximum internal moment
-            let Mn;
-            if (caseNumber == 1) {
-                Mn = As * fy * (d - (a / 2)) * (1 / 12000);
-                output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
-            } else {
-                const yc = ((Af * (hf / 2)) + ((a - hf) * bw) * (hf + (0.5 * (a - hf))))/Ac;
-                Mn = As * fy * (d-yc) * (1/12000);
-                output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
-                }
-            
+            const Mn =  ((0.85 * fc * a * b * (d - (a / 2))) + (Asp * fsp * (d - dp))) * (1 / 12000);
+            output += `Maximum internal moment: M<sub>n</sub> = ${Mn.toFixed(2)} k·ft\n`;
+
             // Solve for usable/design capacity
             const descap = phi * Mn;
             output += `Usable/design capacity: &#934M<sub>n</sub> = ${descap.toFixed(2)} k·ft\n`;
-
 
             // Always display results
             let finalOutput = `<span class="success">${output}</span>`;
@@ -243,66 +286,38 @@
             document.getElementById('output').innerHTML = finalOutput;
 
             // Plot the graph
-            plotGraph(ba, beff, bw, hf, d, c, a);
+            plotGraph(b, d, c, a);
         }
 
-        function plotGraph(ba, beff, bw, hf, d, c, a) {
+        function plotGraph(b, d, c, a) {
             const h = d + 2;
-            const x_range = [-0.03 - beff * 0.001, -0.03, 0.06];
+            const x_range = [-0.03 - b * 0.001, -0.03, 0.06];
 
             const traces = [
                 {
-                    x: [-0.03 - beff * 0.001, -0.03], //top flange - top horizaontal line
+                    x: [-0.03 - b * 0.001, -0.03],
+                    y: [0, 0],
+                    mode: 'lines',
+                    line: { color: 'black' },
+                    showlegend: false
+                },
+                {
+                    x: [-0.03 - b * 0.001, -0.03],
                     y: [h, h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
                 },
                 {
-                    x: [-0.03 - beff * 0.001, -0.03 - beff * 0.001], // Top flange - left vertical edge
-                    y: [(h - hf), h],
+                    x: [(-0.03 - b * 0.001), (-0.03 - b * 0.001)],
+                    y: [0, h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
                 },
                 {
-                    x: [-0.03, -0.03], // Top flange - right vertical edge
-                    y: [(h - hf), h],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03 - beff * 0.001, -0.03 - 0.0005*beff - 0.0005*bw], // Bottom flange - left segment (break before web)
-                    y: [h - hf, h - hf],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03 - 0.0005*beff + 0.0005*bw, -0.03], // Bottom flange - right segment (break after web)
-                    y: [h - hf, h - hf],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03 - 0.0005*beff - 0.0005*bw, -0.03 - 0.0005*beff - 0.0005*bw], // Stem - left vertical edge
-                    y: [0, h - hf],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03 - 0.0005*beff + 0.0005*bw, -0.03 - 0.0005*beff + 0.0005*bw], // Stem - right vertical edge
-                    y: [0, h - hf],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03 - 0.0005*beff - 0.0005*bw, -0.03 - 0.0005*beff + 0.0005*bw], // Stem - bottom horizontal line
-                    y: [0, 0],
+                    x: [-0.03, -0.03],
+                    y: [0, h],
                     mode: 'lines',
                     line: { color: 'black' },
                     showlegend: false
@@ -336,14 +351,14 @@
                     showlegend: false
                 },
                 {
-                    x: [-0.03 - 0.0005*beff - 0.0005*ba, -0.03 - 0.0005*beff + 0.0005*ba],
+                    x: [-0.03 - b * 0.001, -0.03],
                     y: [h - c, h - c],
                     mode: 'lines',
                     line: { color: 'black', dash: 'dash' },
                     name: 'Neutral Axis: c'
                 },
                 {
-                    x: [-0.03 - 0.0005*beff - 0.0005*ba, -0.03 - 0.0005*beff + 0.0005*ba],
+                    x: [-0.03 - b * 0.001, -0.03],
                     y: [h - a, h - a],
                     mode: 'lines',
                     line: { color: 'blue', dash: 'dot' },
@@ -429,9 +444,8 @@
                 xValues.push(x);
                 yValues.push(y);
             }
-            const strainTrace = traces.find(t => t.name === 'Strain Line');
-                strainTrace.x = xValues;
-                strainTrace.y = yValues;
+            traces[19].x = xValues;
+            traces[19].y = yValues;
 
             const layout = {
                 xaxis: { showticklabels: false, visible: false, scaleanchor: 'y', scaleratio: 1000 },
@@ -446,9 +460,9 @@
                 type: 'circle',
                 xref: 'x',
                 yref: 'y',
-                x0: -(61 + beff) / 2000,
+                x0: -(61 + b) / 2000,
                 y0: h - d - 0.5,
-                x1: -(59 + beff) / 2000,
+                x1: -(59 + b) / 2000,
                 y1: h - d + 0.5,
                 line: { color: 'grey' }
             };
