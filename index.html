@@ -209,20 +209,19 @@
                 const x = 0.85 * fc/1000 * b1 * b;
                 const y = (Asp * 29000 * 0.003) - (As * fy/1000);
                 const z = -Asp * 29000 * 0.003 * dp;
-                function solveQuadratic(x, y, z) {
-                    const discriminant = y * y - 4 * x * z;
+                function solveQuadratic(a, b, c) {
+                    const discriminant = b * b - 4 * a * c;
 
                     if (discriminant < 0) {
                         console.log("No real roots.");
                         return null;
                     }
-                    const root1 = (-y + Math.sqrt(discriminant)) / (2 * x);
-                    const root2 = (-y - Math.sqrt(discriminant)) / (2 * x);
+                    const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                    const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
 
-                    const largerRoot = Math.max(root1, root2);
-                    return largerRoot;
+                    return Math.max(root1, root2);
                 }
-                c = largerRoot;
+                c = solveQuadratic(x,y,z);
                 output += `c = ${c.toFixed(2)} in\n`;
             }
             
