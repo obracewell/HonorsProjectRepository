@@ -244,7 +244,7 @@
             let preq;
             let Asreq;
             if (caseNumber == 1) {
-                Rn = (Mu*12000)/(0.9*beff*d^2);
+                Rn = (Mu*12000)/(0.9*beff*d*d);
                 preq = ((0.85*fc)/fy)*(1-sqrt(1-((2*Rn)/(0.85*fc))));
                 Asreq = preq*beff*d;
             } else {
@@ -252,12 +252,12 @@
                 Mnf = 0.85*fc*Acf*(d-(0.5*hf))/12000;
                 Asf = (0.85*fc*Acf)/fy;
                 Mnw = (Mu/0.9)-Mnf;
-                Rn = (Mnw*12000)/(0.9*bw*d^2);
+                Rn = (Mnw*12000)/(0.9*bw*d*d);
                 preq = ((0.85*fc)/fy)*(1-sqrt(1-((2*Rn)/(0.85*fc))));
                 Asw = preq*beff*d;
                 Asreq = Asf + Asw;
             }
-            output += `A<sub>s,min</sub> = ${Asreq.toFixed(2)} in\n`;
+            output += `A<sub>s,req</sub> = ${Asreq.toFixed(2)} in\n`;
 
               // Filter the bar table
               const sortedTable = barTable.sort((a, b) => a.area - b.area);
@@ -306,6 +306,8 @@
         function performCustomCalc() {
             let output = '';
             let errorMessage = '';
+            let As = parseFloat(document.getElementById('As').value);
+            
             // Validate inputs
             if (isNaN(As)) {
                 alert("Please enter all values.");
