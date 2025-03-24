@@ -209,13 +209,13 @@
         
         function performAnalysis() {
             // Get input values
-            const fc = parseFloat(document.getElementById('fc').value);
-            const fy = parseFloat(document.getElementById('fy').value);
-            const d = parseFloat(document.getElementById('d').value);
-            const bw = parseFloat(document.getElementById('bw').value);
-            const beff = parseFloat(document.getElementById('beff').value);
-            const hf = parseFloat(document.getElementById('hf').value);
-            const Mu = parseFloat(document.getElementById('Mu').value);
+            fc = parseFloat(document.getElementById('fc').value);
+            fy = parseFloat(document.getElementById('fy').value);
+            d = parseFloat(document.getElementById('d').value);
+            bw = parseFloat(document.getElementById('bw').value);
+            beff = parseFloat(document.getElementById('beff').value);
+            hf = parseFloat(document.getElementById('hf').value);
+            Mu = parseFloat(document.getElementById('Mu').value);
 
             
             // Validate inputs
@@ -404,7 +404,7 @@
             }
 
             // Display in output div
-            document.getElementById('output').innerHTML = finalOutput;
+            document.getElementById('custonOutput').innerHTML = finalOutput;
     
         }
         
