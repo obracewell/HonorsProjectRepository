@@ -40,6 +40,15 @@
             margin-left: auto;
             margin-right: auto;
         } 
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+          width: 150px;
+          text-align: center;
+          padding: 5px;
+          border: 1px solid black;
+        }
     </style>
 </head>
 <body>
@@ -79,6 +88,7 @@
     <button onclick="performAnalysis()">Calculate</button>
 
     <div id="output" class="output"></div>
+    <div id="customOutput" style="margin-top: 15px; font-weight: bold;"></div>
    
 
     <script>
