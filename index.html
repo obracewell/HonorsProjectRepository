@@ -273,7 +273,7 @@
               });
 
               // Take last 2 from less, all equal, first 4 from greater
-              const selectedRows = less.slice(-2).concat(equal, greater.slice(0, 4));
+              const selectedRows = less.slice(-2).concat(equal, greater.slice(0, 7));
 
               // Build table output
               output += `<table>
@@ -294,8 +294,8 @@
               output += `</table>`;
 
             output += `
-              <p style="margin-top: 20px;">Find an option that b<sub>min</sub> > b<sub>w</sub> and ANALYZE</p>
-              <label for="As">Area of steel for chosen bar selection, A<sub>s</sub> (in): </label>
+              <p style="margin-top: 20px;">Find an option that b<sub>min</sub> > b<sub>w</sub> = ${bw.toFixed(2)} and ANALYZE</p>
+              <label for="As">Area of steel for chosen bar selection, A<sub>s</sub> (in<sup>2</sup>): </label>
               <input type="number" id="As" step="0.01">
               <button onclick="performCustomCalc()">Analyze</button>
               <div id="customOutput" style="margin-top: 15px; font-weight: bold;"></div>
