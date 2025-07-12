@@ -101,11 +101,10 @@
     </header>
 
 <div class="page-content">
-    <h1 class="centered">Analysis: Singly Reinforced Beam</h1>
-    <h2 class="centered">AT FAILURE</h2>
+    <h1 class="centered">Design: Square Column</h1>
 
     <img src="https://github.com/obracewell/RCanalysiscalculator/blob/main/assets/SRBlabeled.png?raw=true" 
-        alt="Rectangular Section SRB Diagram" 
+        alt="Square Column Diagram" 
         class="image centered-img" />
     
     <p class="success">Input the following values:</p>
@@ -116,52 +115,16 @@
     <label for="fy">Yield stress of steel, f<sub>y</sub> (psi): </label>
     <input type="number" id="fy"><br>
 
-    <label for="As">Cross-sectional area of steel, A<sub>s</sub> (in<sup>2</sup>): </label>
-    <input type="number" id="As"oninput="toggleBarInputs()"><br>
+    <p>Factored load, P<sub>u</sub> (k):</p><br>
+    <label for="Pu">Direct input, P<sub>u</sub>= </label>
+    <input type="number" id="Pu"><br>
+    <p>Calculate from live and dead loads, P<sub>u</sub> = 1.2(P<sub>D</sub>) + 1.6(P<sub>L</sub>) </p>
+    <label for="Pd">Dead Load, P<sub>D</sub>= </label>
+    <input type="number" id="Pd">
+    <label for="Pl">Live Load, P<sub>L</sub>= </label><br>
 
-    <div style="margin-left: 30px;">
-    <label for="numBars">OR </label>
-    <select id="numBars" onchange="toggleAsInput()">
-        <option value="">Select number of bars</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-    </select>
-    <label for="barSize">#</label>
-    <select id="barSize" onchange="toggleAsInput()">
-        <option value="">Select bar size</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="14">14</option>
-        <option value="18">18</option>
-    </select>
-    <label for="rows">Rows of Bars:</label>
-    <select id="rows" onchange="toggleAsInput()">
-        <option value="">Select</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-    </select>
-    <br>
-    </div>
-    
-    <label for="d">Depth of steel, d (in): </label>
-    <input type="number" id="d"><br>
-
-    <label for="b">Length of the base, b (in): </label>
-    <input type="number" id="b"><br>
+    <label for="rhoi">Target steel reinforcing ratio, &#961 (%): </label>
+    <input type="number" id="rhoi"<br>
 
     <button onclick="performAnalysis()">Calculate</button>
 
