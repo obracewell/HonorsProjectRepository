@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -87,6 +87,15 @@
         .page-content {
             padding: 0px 60px;
         }
+        table {
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+           border: 1px solid #333;
+           padding: 5px 10px;
+        text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -134,7 +143,7 @@
         <label for="Pd">Dead Load, P<sub>D</sub> (k) = </label>
         <input type="number" id="Pd" oninput="toggleLoadInputs()"><br>
         <label for="Pl">Live Load, P<sub>L</sub>= </label>
-        <input type="number" id="Pl" oninput="toggleLoadInputs()"<br>
+        <input type="number" id="Pl" oninput="toggleLoadInputs()"><br>
     </div>
 
     <label for="rhoi">Target steel reinforcing ratio, &#961 (%): </label>
@@ -230,15 +239,16 @@ const barTable = [
             const Pd = parseFloat(PdInput.value);
             const Pl = parseFloat(PlInput.value);
 
+            const Pu = parseFloat(PuInput.value);
+            if (!isNaN(Pu)) {
+                return Pu;
+            }
             if (!isNaN(Pd) || !isNaN(Pl)) {
               const dead = isNaN(Pd) ? 0 : Pd;
               const live = isNaN(Pl) ? 0 : Pl;
               return 1.2 * dead + 1.6 * live;
             } 
-            const Pu = parseFloat(PuInput.value);
-            if (!isNaN(Pu)) {
-                return Pu;
-            }
+            
             return NaN;
           }
         
@@ -258,7 +268,6 @@ const barTable = [
             }
 
             let output = `<p class="success">Design:</p><br><br>`;
-            let errorMessage = '';
             
             //Calculate Agreq
             const Agreq = Pu / (phi*alpha*(0.0085*fc*(1-0.01*rhoi)+0.001*fy*0.01*rhoi));
@@ -271,31 +280,30 @@ const barTable = [
             const AgSmall = sideSmall * sideSmall;
             const AgLarge = sideLarge * sideLarge;
 
-            output += `A<sub>g,req</sub> = ${Asgreq.toFixed(2)} in\n\n`;
-            output += `Choose A<sub>g</sub>:\n`;
-            output += `Round Down: $(sideSmall} in × ${sideSmall} in, A<sub>g</sub> = ${AgSmall} in²\n`;
-            output += `Round Up: ${sideLarge} in × ${sideLarge} in, A<sub>g</sub> = ${AgLarge} in²\n`;
+            output += `A<sub>g,req</sub> = ${Agreq.toFixed(2)} in<br><br>`;
+            output += `Choose A<sub>g</sub>:<br>`;
+            output += `Round Down: ${sideSmall} in × ${sideSmall} in, A<sub>g</sub> = ${AgSmall} in²<br>`;
+            output += `Round Up: ${sideLarge} in × ${sideLarge} in, A<sub>g</sub> = ${AgLarge} in²<br>`;
 
             output += `
               <p style="margin-top: 20px;">Choose an option and Continue Design</p>
               <label for="dimension"> Length/Width of Column (in): </label>
-              <input type="number" id="dimension">
+              <input type="number" id="dimension"><br>
               <label for="Ag">Area of concrete for chosen dimensions, A<sub>g</sub> (in<sup>2</sup>): </label>
-              <input type="number" id="Ag" step="0.01">
+              <input type="number" id="Ag" step="0.01"><br>
               <button onclick="continueCalculation()">Continue Calculation</button>
-              <div id="customOutput" style="margin-top: 15px; font-weight: bold;"></div>
+              <div id="customOutput" style="margin-top: 15px; font-weight: bold;"><br></div>
 `;
               document.getElementById('output').innerHTML = output;
             }
         
         
         function continueCalculation() {
-            let output = '':
-            let errorMessage = '';
+            let output = '';
             const fc = parseFloat(document.getElementById('fc').value);
             const fy = parseFloat(document.getElementById('fy').value);
             const Pu = getPuValue();
-            const Ag = parseFloat(document.getElementById('Ag').value;
+            const Ag = parseFloat(document.getElementById('Ag').value);
             const phi = 0.65; //strength reduction factor
             const alpha = 0.8; //column interaction coefficient
 
@@ -305,10 +313,10 @@ const barTable = [
             return;
             }
             //calculate Astreq
-            let Astreq = (Pu - phi*alpha*0.85*0.001*fc*Ag)/(phi*alpha*(fy*0.001 - 0.85*0.001*fc);
+            let Astreq = (Pu - phi*alpha*0.85*0.001*fc*Ag)/(phi*alpha*(fy*0.001 - 0.85*0.001*fc));
             
-            output += `\nRequired steel area, A<sub>st,req</sub>: ${Astreq.toFixed(2)} in²\n\n`;
-            output += `Bar Options:\n`;
+            output += `\nRequired steel area, A<sub>st,req</sub>: ${Astreq.toFixed(2)} in²<br><br>`;
+            output += `Bar Options:<br>`;
 
             //Filter bar table
             const sortedTable = barTable.sort((a, b) => a.area - b.area);
@@ -318,8 +326,8 @@ const barTable = [
               let greater = [];
 
               sortedTable.forEach(row => {
-                if (row.area < Asreq) less.push(row);
-                else if (row.area === Asreq) equal.push(row);
+                if (row.area < Astreq) less.push(row);
+                else if (row.area === Astreq) equal.push(row);
                 else greater.push(row);
               });
 
@@ -352,15 +360,15 @@ const barTable = [
             output += `
               <p style="margin-top: 20px;">Choose an option and Continue Design</p>
               <label for="Ast">Area of steel for chosen bar selection, A<sub>st</sub> (in<sup>2</sup>): </label>
-              <input type="number" id="Ast" step="0.01">
+              <input type="number" id="Ast" step="0.01"><br>
               <label for="barSel">Bar Number (#): </label>
-              <input type="number" id="barSel">
+              <input type="number" id="barSel"><br>
               <label for="barQ">Number of Bars: </label>
-              <input type="number" id="barQ">
+              <input type="number" id="barQ"><br>
               <label for="barD">Bar Diameter (in): </label>
-              <input type="number" id="barD">
+              <input type="number" id="barD"><br>
               <button onclick="tieDesignCalc()">Continue Calcualtion</button>
-              <div id="customOutput" style="margin-top: 15px; font-weight: bold;"></div>
+              <div id="customOutput" style="margin-top: 15px; font-weight: bold;"><br></div>
             `;
               document.getElementById('output').innerHTML = output;
             }
@@ -373,12 +381,12 @@ const barTable = [
         let dimension = parseFloat(document.getElementById('dimension').value);
 
         //assign bar tie diameter (#3 or #4 ties)
-        let barTD
-        let barTSel
+        let barTD;
+        let barTSel;
         if (barSel <= 10) {
             barTD = 0.375;
             barTSel = 3;
-        } else if (BarSel > 10) {
+        } else if (barSel > 10) {
             barTD = 0.5;
             barTSel = 4;
         }
@@ -390,24 +398,17 @@ const barTable = [
 
         let S = Math.min(spacing1, spacing2, spacing3);
 
-        output += `Tie Spacing is every ${S} inches\n\n;
+        output += `Tie Spacing is every ${S.toFixed(0)} inches<br><br>`;
 
         document.getElementById('output').innerHTML = output;
     }
         
             
 
-            // Always display results
-            let finalOutput = `<span class="success">${output}</span>`;
-
             // Append error message if exists
             if (errorMessage) {
                 finalOutput += `<br><span class="error">${errorMessage}</span>`;
             }
-
-            // Display in output div
-            document.getElementById('output').innerHTML = finalOutput;
-
            
 
     </script>
