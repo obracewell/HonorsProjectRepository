@@ -256,7 +256,7 @@ const barTable = [
             // Get input values
             const fc = parseFloat(document.getElementById('fc').value);
             const fy = parseFloat(document.getElementById('fy').value);
-            const Pu = getPuValue();
+            const Pu = getPuValue() *1000;
             const rhoi = parseFloat(document.getElementById('rhoi').value);
             const phi = 0.65; //strength reduction factor
             const alpha = 0.8; //column interaction coefficient
@@ -294,7 +294,7 @@ const barTable = [
               <button onclick="continueCalculation()">Continue Calculation</button>
               <div id="customOutput" style="margin-top: 15px; font-weight: bold;"><br></div>
 `;
-              document.getElementById('output').innerHTML = output;
+              document.getElementById('output').innerHTML += output;
             }
         
         
@@ -304,6 +304,8 @@ const barTable = [
             const fy = parseFloat(document.getElementById('fy').value);
             const Pu = getPuValue();
             const Ag = parseFloat(document.getElementById('Ag').value);
+            const dimensionInput = document.getElementById('dimension');
+            let dimension = dimensionInput ? parseFloat(dimensionInput.value) : NaN;
             const phi = 0.65; //strength reduction factor
             const alpha = 0.8; //column interaction coefficient
 
@@ -353,32 +355,30 @@ const barTable = [
               output += `</table>`;
 
             output += `The four corner bars must be the same size. When using 6 or 8 bars, the additonal bars can be a secondary size.<br>`;
-            output += `
-                Use <a href="https://obracewell.github.io/RCBeamCalculator-Tables/" target="_blank" class="styled-link">Tables 3 and 4</a> to make a different combination on your own.<br>`;
+            output += `Use <a href="https://obracewell.github.io/RCBeamCalculator-Tables/" target="_blank" class="styled-link">Tables 3 and 4</a> to make a different combination on your own.<br>`;
             output += `This program can only continue with tie design for design with all bars the same size.<br>`;
 
             output += `
               <p style="margin-top: 20px;">Choose an option and Continue Design</p>
               <label for="Ast">Area of steel for chosen bar selection, A<sub>st</sub> (in<sup>2</sup>): </label>
               <input type="number" id="Ast" step="0.01"><br>
-              <label for="barSel">Bar Number (#): </label>
-              <input type="number" id="barSel"><br>
               <label for="barQ">Number of Bars: </label>
               <input type="number" id="barQ"><br>
+              <label for="barSel">Bar Number (#): </label>
+              <input type="number" id="barSel"><br>
               <label for="barD">Bar Diameter (in): </label>
               <input type="number" id="barD"><br>
-              <button onclick="tieDesignCalc()">Continue Calcualtion</button>
+              <button onclick="tieDesignCalc(${dimension})">Continue Calcualtion</button>
               <div id="customOutput" style="margin-top: 15px; font-weight: bold;"><br></div>
             `;
-              document.getElementById('output').innerHTML = output;
+              document.getElementById('output').innerHTML += output;
             }
 
-    function tieDesignCalc() {
+    function tieDesignCalc(dimension) {
         let output='';
         let barSel = parseFloat(document.getElementById('barSel').value);
         let barQ = parseFloat(document.getElementById('barQ').value);
         let barD = parseFloat(document.getElementById('barD').value);
-        let dimension = parseFloat(document.getElementById('dimension').value);
 
         //assign bar tie diameter (#3 or #4 ties)
         let barTD;
@@ -400,7 +400,7 @@ const barTable = [
 
         output += `Tie Spacing is every ${S.toFixed(0)} inches<br><br>`;
 
-        document.getElementById('output').innerHTML = output;
+        document.getElementById('output').innerHTML += output;
     }
           
 
