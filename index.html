@@ -149,18 +149,62 @@
     </select>
     <br>
 
-    <button onclick="performAnalysis()">Calculate</button>
+    <button onclick="performAgSelect()">Calculate</button>
 
     <div id="output" class="output"></div>
+
+    <div id="columnOptions" style="display:none; margin-top: 10px;">
+    <p id="optionDescriptions"></p>
+
+    <label for="agChoice"><strong>Choose Ag to use:</strong></label>
+    <select id="agChoice" onchange="handleAgSelection()">
+        <option value="">Select one</option>
+    </select>
+</div>
+
+<button id="continueBtn" onclick="continueCalculation()" style="display:none; margin-top: 10px;">
+    Continue Calculation
+</button>
+
+<div id = "steelResults" class="output" style="margin-top: 15px;"></div>
    
-    <div id="graph" style="width: 800px; height: 600px;"></div>
-    <div id="graphButtons" style="margin-top: 10px; display: none;">
-        <button onclick="copyGraphAsImage()">Copy Graph</button>
-        <button onclick="downloadGraphImage()">Download Graph</button>
-    </div>
 </div>
     
     <script>
+
+const barTable = [
+          { barQuant: 4, barSelection: 4, barDia: 0.5, area: 0.78 },
+          { barQuant: 6, barSelection: 4, barDia: 0.5, area: 1.18 },
+          { barQuant: 8, barSelection: 4, barDia: 0.5, area: 1.57},
+          { barQuant: 4, barSelection: 5, barDia: 0.625, area: 1.23},
+          { barQuant: 6, barSelection: 5, barDia: 0.625, area: 1.84 },
+          { barQuant: 8, barSelection: 5, barDia: 0.625, area: 2.45 },
+          { barQuant: 4, barSelection: 6, barDia: 0.75, area: 1.77 },
+          { barQuant: 6, barSelection: 6, barDia: 0.75, area: 2.65 },
+          { barQuant: 8, barSelection: 6, barDia: 0.75, area: 3.53 },
+          { barQuant: 4, barSelection: 7, barDia: 0.875, area: 2.41 },
+          { barQuant: 6, barSelection: 7, barDia: 0.875, area: 3.61 },
+          { barQuant: 8, barSelection: 7, barDia: 0.875, area: 4.81 },
+          { barQuant: 4, barSelection: 8, barDia: 1.0, area: 3.14 },
+          { barQuant: 6, barSelection: 8, barDia: 1.0, area: 4.71 },
+          { barQuant: 8, barSelection: 8, barDia: 1.0, area: 6.28 },
+          { barQuant: 4, barSelection: 9, barDia: 1.128, area: 4.00 },
+          { barQuant: 6, barSelection: 9, barDia: 1.128, area: 6.00 },
+          { barQuant: 8, barSelection: 9, barDia: 1.128, area: 8.00 },
+          { barQuant: 4, barSelection: 10, barDia: 1.270, area: 5.06 },
+          { barQuant: 6, barSelection: 10, barDia: 1.270, area: 7.59 },
+          { barQuant: 8, barSelection: 10, barDia: 1.270, area: 10.12 },
+          { barQuant: 4, barSelection: 11, barDia: 1.410, area: 6.25 },
+          { barQuant: 6, barSelection: 11, barDia: 1.410, area: 9.37 },
+          { barQuant: 8, barSelection: 11, barDia: 1.410, area: 12.50 },
+          { barQuant: 4, barSelection: 14, barDia: 1.693, area: 9.00 },
+          { barQuant: 6, barSelection: 14, barDia: 1.693, area: 13.50 },
+          { barQuant: 8, barSelection: 14, barDia: 1.693, area: 18.00 },
+          { barQuant: 4, barSelection: 18, barDia: 2.257, area: 16.00 },
+          { barQuant: 6, barSelection: 18, barDia: 2.257, area: 24.00 },
+          { barQuant: 8, barSelection: 18, barDia: 2.257, area: 32.00 },
+        ];
+        
         function toggleLoadInputs() {
             const Pu = document.getElementById('Pu');
             const Pd = document.getElementById('Pd');
@@ -198,7 +242,7 @@
             return NaN;
           }
         
-        function performAnalysis() {
+        function performAgSelect() {
             // Get input values
             const fc = parseFloat(document.getElementById('fc').value);
             const fy = parseFloat(document.getElementById('fy').value);
@@ -213,16 +257,144 @@
                 return;
             }
 
-            let output = 'Results:\n\n';
+            let output = `<p class="success">Design:</p><br><br>`;
             let errorMessage = '';
             
             //Calculate Agreq
-            let Agreq = Pu / (phi*alpha*(0.0085*fc*(1-0.01*rhoi)+0.001*fy*0.01*rhoi));
+            const Agreq = Pu / (phi*alpha*(0.0085*fc*(1-0.01*rhoi)+0.001*fy*0.01*rhoi));
                         
+            //Calculate and show Ag options
+            const side = Math.sqrt(Agreq);
+            const sideSmall = Math.floor(side/2) * 2;
+            const sideLarge = sideSmall + 2;
 
+            const AgSmall = sideSmall * sideSmall;
+            const AgLarge = sideLarge * sideLarge;
 
+            output += `A<sub>g,req</sub> = ${Asgreq.toFixed(2)} in\n\n`;
+            output += `Choose A<sub>g</sub>:\n`;
+            output += `Round Down: $(sideSmall} in × ${sideSmall} in, A<sub>g</sub> = ${AgSmall} in²\n`;
+            output += `Round Up: ${sideLarge} in × ${sideLarge} in, A<sub>g</sub> = ${AgLarge} in²\n`;
 
+            output += `
+              <p style="margin-top: 20px;">Choose an option and Continue Design</p>
+              <label for="dimension"> Length/Width of Column (in): </label>
+              <input type="number" id="dimension">
+              <label for="Ag">Area of concrete for chosen dimensions, A<sub>g</sub> (in<sup>2</sup>): </label>
+              <input type="number" id="Ag" step="0.01">
+              <button onclick="continueCalculation()">Continue Calculation</button>
+              <div id="customOutput" style="margin-top: 15px; font-weight: bold;"></div>
+`;
+              document.getElementById('output').innerHTML = output;
+            }
+        
+        
+        function continueCalculation() {
+            let output = '':
+            let errorMessage = '';
+            const fc = parseFloat(document.getElementById('fc').value);
+            const fy = parseFloat(document.getElementById('fy').value);
+            const Pu = getPuValue();
+            const Ag = parseFloat(document.getElementById('Ag').value;
+            const phi = 0.65; //strength reduction factor
+            const alpha = 0.8; //column interaction coefficient
 
+            // Validate inputs
+            if (isNaN(fc) || isNaN(fy) || isNaN(Pu) || isNaN(Ag)) {
+                alert("Please enter all values.");
+            return;
+            }
+            //calculate Astreq
+            let Astreq = (Pu - phi*alpha*0.85*0.001*fc*Ag)/(phi*alpha*(fy*0.001 - 0.85*0.001*fc);
+            
+            output += `\nRequired steel area, A<sub>st,req</sub>: ${Astreq.toFixed(2)} in²\n\n`;
+            output += `Bar Options:\n`;
+
+            //Filter bar table
+            const sortedTable = barTable.sort((a, b) => a.area - b.area);
+
+              let less = [];
+              let equal = [];
+              let greater = [];
+
+              sortedTable.forEach(row => {
+                if (row.area < Asreq) less.push(row);
+                else if (row.area === Asreq) equal.push(row);
+                else greater.push(row);
+              });
+
+              // Take all equal, first 4 from greater
+              const selectedRows = equal.concat(greater.slice(0, 4));
+
+              // Build table output
+              output += `<table>
+                          <tr>
+                            <th>Number of Bars</th>
+                            <th>Bar Number (#)</th>
+                            <th>Area (in²)</th>
+                            <th>Bar Diameter</th>
+                          </tr>`;
+              selectedRows.forEach(row => {
+                output += `<tr>
+                            <td>${row.barQuant}</td>
+                            <td>${row.barSelection}</td>
+                            <td>${row.area}</td>
+                            <td>${row.barDia}</td>
+                          </tr>`;
+                 });
+              output += `</table>`;
+
+            output += `The four corner bars must be the same size. When using 6 or 8 bars, the additonal bars can be a secondary size.<br>`;
+            output += `
+                Use <a href="https://obracewell.github.io/RCBeamCalculator-Tables/" target="_blank" class="styled-link">Tables 3 and 4</a> to make a different combination on your own.<br>`;
+            output += `This program can only continue with tie design for design with all bars the same size.<br>`;
+
+            output += `
+              <p style="margin-top: 20px;">Choose an option and Continue Design</p>
+              <label for="Ast">Area of steel for chosen bar selection, A<sub>st</sub> (in<sup>2</sup>): </label>
+              <input type="number" id="Ast" step="0.01">
+              <label for="barSel">Bar Number (#): </label>
+              <input type="number" id="barSel">
+              <label for="barQ">Number of Bars: </label>
+              <input type="number" id="barQ">
+              <label for="barD">Bar Diameter (in): </label>
+              <input type="number" id="barD">
+              <button onclick="tieDesignCalc()">Continue Calcualtion</button>
+              <div id="customOutput" style="margin-top: 15px; font-weight: bold;"></div>
+            `;
+              document.getElementById('output').innerHTML = output;
+            }
+
+    function tieDesignCalc() {
+        let output='';
+        let barSel = parseFloat(document.getElementById('barSel').value);
+        let barQ = parseFloat(document.getElementById('barQ').value);
+        let barD = parseFloat(document.getElementById('barD').value);
+        let dimension = parseFloat(document.getElementById('dimension').value);
+
+        //assign bar tie diameter (#3 or #4 ties)
+        let barTD
+        let barTSel
+        if (barSel <= 10) {
+            barTD = 0.375;
+            barTSel = 3;
+        } else if (BarSel > 10) {
+            barTD = 0.5;
+            barTSel = 4;
+        }
+
+        //determine spacing
+        let spacing1 = 48 * barTD;
+        let spacing2 = 16 * barD;
+        let spacing3 = parseFloat(document.getElementById('dimension').value);
+
+        let S = Math.min(spacing1, spacing2, spacing3);
+
+        output += `Tie Spacing is every ${S} inches\n\n;
+
+        document.getElementById('output').innerHTML = output;
+    }
+        
             
 
             // Always display results
@@ -236,296 +408,8 @@
             // Display in output div
             document.getElementById('output').innerHTML = finalOutput;
 
-            // Plot the graph
-            plotGraph(b, d, c, a,fc, fy, As);
+           
 
-            document.getElementById('graphButtons').style.display = 'block';
-        }
-        
-        function plotGraph(b, d, c, a, fc, fy, As) {
-            const h = d + 2;
-            const x_range = [-0.03 - b * 0.001, -0.03, 0.06];
-
-            const traces = [
-                {
-                    x: [null],
-                    y: [null],
-                    mode: 'none',
-                    name: `f'<sub>c</sub> = ${fc} psi`,
-                    showlegend: true
-                },
-                {
-                    x: [null],
-                    y: [null],
-                    mode: 'none',
-                    name: `f<sub>y</sub> = ${fy} psi`,
-                    showlegend: true
-                },
-                {
-                    x: [null],
-                    y: [null],
-                    mode: 'none',
-                    name: `A<sub>s</sub> = ${As.toFixed(2)} in²`,
-                    showlegend: true
-                },
-                {
-                    x: [null],
-                    y: [null],
-                    mode: 'none',
-                    name: `d = ${d} in`,
-                    showlegend: true
-                },
-                {
-                    x: [null],
-                    y: [null],
-                    mode: 'none',
-                    name: `b = ${b} in`,
-                    showlegend: true
-                },
-                {
-                    x: [-0.03 - b * 0.001, -0.03],
-                    y: [0, 0],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03 - b * 0.001, -0.03],
-                    y: [h, h],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [(-0.03 - b * 0.001), (-0.03 - b * 0.001)],
-                    y: [0, h],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03, -0.03],
-                    y: [0, h],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [0, 0],
-                    y: [0, h],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [0.03, 0.03],
-                    y: [0, h],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.02, 0.06],
-                    y: [0, 0],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.02, 0.06],
-                    y: [h, h],
-                    mode: 'lines',
-                    line: { color: 'black' },
-                    showlegend: false
-                },
-                {
-                    x: [-0.03 - b * 0.001, -0.03],
-                    y: [h - c, h - c],
-                    mode: 'lines',
-                    line: { color: 'black', dash: 'dash' },
-                    name: 'Neutral Axis: c'
-                },
-                {
-                    x: [-0.03 - b * 0.001, -0.03],
-                    y: [h - a, h - a],
-                    mode: 'lines',
-                    line: { color: 'blue', dash: 'dot' },
-                    name: 'Compression Concrete Depth: a'
-                },
-                {
-                    x: [-0.02, 0.06],
-                    y: [h - c, h - c],
-                    mode: 'lines',
-                    line: { color: 'black', dash: 'dash' },
-                    showlegend: false
-                },
-                {
-                    x: [0.03, 0.035],
-                    y: [h - a, h - a],
-                    mode: 'lines',
-                    line: { color: 'blue' },
-                    name: 'Whitney Stress Block'
-                },
-                {
-                    x: [0.03, 0.035],
-                    y: [h - a * 0.2, h - a * 0.2],
-                    mode: 'lines',
-                    line: { color: 'blue' },
-                    showlegend: false
-                },
-                {
-                    x: [0.03, 0.035],
-                    y: [h - a * 0.4, h - a * 0.4],
-                    mode: 'lines',
-                    line: { color: 'blue' },
-                    showlegend: false
-                },
-                {
-                    x: [0.03, 0.035],
-                    y: [h - a * 0.6, h - a * 0.6],
-                    mode: 'lines',
-                    line: { color: 'blue' },
-                    showlegend: false
-                },
-                {
-                    x: [0.03, 0.035],
-                    y: [h - a * 0.8, h - a * 0.8],
-                    mode: 'lines',
-                    line: { color: 'blue' },
-                    showlegend: false
-                },
-                {
-                    x: [0.035, 0.035],
-                    y: [h - a, h],
-                    mode: 'lines',
-                    line: { color: 'blue' },
-                    showlegend: false
-                },
-                {
-                    x: [0.03, 0.04],
-                    y: [h - d, h - d],
-                    mode: 'lines',
-                    line: { color: 'purple' },
-                    name: 'Tensile Force in Steel'
-                },
-                {
-                    x: [0.035, 0.045],
-                    y: [h - a * 0.5, h - a * 0.5],
-                    mode: 'lines',
-                    line: { color: 'red' },
-                    name: 'Compressive Force in Concrete'
-                },
-                {
-                    x: [],
-                    y: [],
-                    mode: 'lines',
-                    line: { color: 'green' },
-                    name: 'Strain Line'
-                }
-            ];
-
-            // Strain diagram points
-            var xValues = [];
-            var yValues = [];
-            for (var y = 0; y <= h; y += 0.01) {
-                var x = (0.003 / c) * (y - h) + 0.003;
-                xValues.push(x);
-                yValues.push(y);
-            }
-            traces[24].x = xValues;
-            traces[24].y = yValues;
-
-            const layout = {
-                xaxis: { showticklabels: false, visible: false, scaleanchor: 'y', scaleratio: 1000 },
-                yaxis: { showticklabels: false, visible: false, scaleanchor: 'x', scaleratio: 1 },
-                showlegend: true,
-                paper_bgcolor: "white",
-                plot_bgcolor: "white"
-            };
-
-            // Steel reinforcement circle
-            var circle = {
-                type: 'circle',
-                xref: 'x',
-                yref: 'y',
-                x0: -(61 + b) / 2000,
-                y0: h - d - 0.5,
-                x1: -(59 + b) / 2000,
-                y1: h - d + 0.5,
-                line: { color: 'grey' }
-            };
-
-            layout.shapes = [circle];
-
-            Plotly.newPlot('graph', traces, layout, { staticPlot: true });
-        }
-        function toggleAsInput() {
-            const barSize = document.getElementById('barSize').value;
-            const numBars = document.getElementById('numBars').value;
-            const rows = parseInt(document.getElementById('rows').value);
-            const AsInput = document.getElementById('As');
-
-            // Disable As input if all bar config inputs are filled
-            if (barSize && numBars && rows) {
-                AsInput.disabled = true;
-                AsInput.placeholder = "Disabled (using bar selection)";
-                AsInput.value = ""; // Optional: clear any existing As
-            } else {
-                AsInput.disabled = false;
-                AsInput.placeholder = "";
-            }
-        }
-        function toggleBarInputs() {
-            const AsInput = document.getElementById('As');
-            const barSize = document.getElementById('barSize');
-            const numBars = document.getElementById('numBars');
-            const rows = document.getElementById('rows');
-
-            // Disable bar selection if As is entered
-            if (AsInput.value.trim() !== "") {
-                barSize.disabled = true;
-                numBars.disabled = true;
-                rows.disabled = true;
-
-            // Optional: Clear bar inputs
-                barSize.value = "";
-                numBars.value = "";
-                rows.value = "";
-            } else {
-                // Enable bar inputs again
-                 barSize.disabled = false;
-                numBars.disabled = false;
-                rows.disabled = false;
-            }
-    toggleAsInput(); // Also update As input state
-}
-    function copyGraphAsImage() {
-    const graphDiv = document.getElementById('graph');
-
-        Plotly.toImage(graphDiv, { format: 'png' }).then(function(dataUrl) {
-        fetch(dataUrl)
-            .then(res => res.blob())
-            .then(blob => {
-                const item = new ClipboardItem({ 'image/png': blob });
-                navigator.clipboard.write([item]).then(() => {
-                    alert("Graph image copied to clipboard!");
-                }).catch(() => {
-                    alert("Failed to copy image. Your browser may not support image clipboard copying.");
-                });
-            });
-    });
-}
-
-function downloadGraphImage() {
-    const graphDiv = document.getElementById('graph');
-
-    Plotly.toImage(graphDiv, { format: 'png' }).then(function(dataUrl) {
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = 'SRBAnalysisGraph.png';
-        link.click();
-    });
-}
     </script>
 <footer class="site-footer">
     <p>Reinforced Concrete Calculator created by Olivia Bracewell, UF Herbert Wertheim College of Engineering</p>
