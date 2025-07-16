@@ -377,8 +377,6 @@ const barTable = [
               <div id="customOutput2" style="margin-top: 15px; font-weight: bold;"><br></div>
             `;
 
-            const savedDimension = document.getElementById('dimension')?.value || '';
-            const savedAg = document.getElementById('Ag')?.value || '';
             const savedAst = document.getElementById('Ast')?.value || '';
             const savedBarQ = document.getElementById('barQ')?.value || '';
             const savedBarSel = document.getElementById('barSel')?.value || '';
@@ -403,7 +401,6 @@ const barTable = [
         const savedBarQ = document.getElementById('barQ')?.value || '';
         const savedBarSel = document.getElementById('barSel')?.value || '';
         const savedBarD = document.getElementById('barD')?.value || '';
-        const savedDimension = document.getElementById('dimension')?.value || '';
         
         let barSel = parseFloat(document.getElementById('barSel').value);
         let barQ = parseFloat(document.getElementById('barQ').value);
@@ -456,7 +453,6 @@ const barTable = [
         document.getElementById('barQ').value = savedBarQ;
         document.getElementById('barSel').value = savedBarSel;
         document.getElementById('barD').value = savedBarD;
-        document.getElementById('dimension').value = savedDimension;
     }
           
 
