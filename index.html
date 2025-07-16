@@ -376,14 +376,35 @@ const barTable = [
               <button onclick="tieDesignCalc()">Continue Calculation</button>
               <div id="customOutput2" style="margin-top: 15px; font-weight: bold;"><br></div>
             `;
-              document.getElementById('output').innerHTML += output;
+
+            const savedDimension = document.getElementById('dimension')?.value || '';
+            const savedAg = document.getElementById('Ag')?.value || '';
+            const savedAst = document.getElementById('Ast')?.value || '';
+            const savedBarQ = document.getElementById('barQ')?.value || '';
+            const savedBarSel = document.getElementById('barSel')?.value || '';
+            const savedBarD = document.getElementById('barD')?.value || '';
+            
+            document.getElementById('output').innerHTML += output;
 
             document.getElementById('dimension').value = savedDimension;
             document.getElementById('Ag').value = savedAg;
+            document.getElementById('Ast').value = savedAst;
+            document.getElementById('barQ').value = savedBarQ;
+            document.getElementById('barSel').value = savedBarSel;
+            document.getElementById('barD').value = savedBarD;
             }
 
     function tieDesignCalc() {
         let output='';
+
+        const savedAg = document.getElementById('Ag')?.value || '';
+        const savedDimension = document.getElementById('dimension')?.value || '';
+        const savedAst = document.getElementById('Ast')?.value || '';
+        const savedBarQ = document.getElementById('barQ')?.value || '';
+        const savedBarSel = document.getElementById('barSel')?.value || '';
+        const savedBarD = document.getElementById('barD')?.value || '';
+        const savedDimension = document.getElementById('dimension')?.value || '';
+        
         let barSel = parseFloat(document.getElementById('barSel').value);
         let barQ = parseFloat(document.getElementById('barQ').value);
         let barD = parseFloat(document.getElementById('barD').value);
@@ -407,9 +428,19 @@ const barTable = [
 
         let S = Math.min(spacing1, spacing2, spacing3);
 
+        output += `Using a Tie Confinement System<br>`;
         output += `Tie Spacing is every ${S.toFixed(0)} inches<br><br>`;
 
+        output = `<div style="margin-top: 15px;">${output}</div>`;
         document.getElementById('output').innerHTML += output;
+
+        document.getElementById('Ag').value = savedAg;
+        document.getElementById('dimension').value = savedDimension;
+        document.getElementById('Ast').value = savedAst;
+        document.getElementById('barQ').value = savedBarQ;
+        document.getElementById('barSel').value = savedBarSel;
+        document.getElementById('barD').value = savedBarD;
+        document.getElementById('dimension').value = savedDimension;
     }
           
 
