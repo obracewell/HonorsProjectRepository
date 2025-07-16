@@ -255,9 +255,9 @@ const barTable = [
         function performAgSelect() {
             // Get input values
             const fc = parseFloat(document.getElementById('fc').value);
-            const fy = parseFloat(document.getElementById('fy').value) / 100;
+            const fy = parseFloat(document.getElementById('fy').value);
             const Pu = getPuValue();
-            const rhoi = parseFloat(document.getElementById('rhoi').value);
+            const rhoi = parseFloat(document.getElementById('rhoi').value) / 100;
             const phi = 0.65; //strength reduction factor
             const alpha = 0.8; //column interaction coefficient
             
@@ -270,7 +270,7 @@ const barTable = [
             let output = `<p class="success">Design:</p><br><br>`;
             
             //Calculate Agreq
-            const Agreq = (Pu*1000) / (phi*alpha*(0.85*fc*(1-rhoi) + fy*rhoi);
+            const Agreq = (Pu*1000) / (phi*alpha*(0.85*fc*(1-rhoi) + fy*rhoi));
                         
             //Calculate and show Ag options
             const side = Math.sqrt(Agreq);
@@ -292,7 +292,7 @@ const barTable = [
               <label for="Ag">Area of concrete for chosen dimensions, A<sub>g</sub> (in<sup>2</sup>): </label>
               <input type="number" id="Ag" step="0.01"><br>
               <button onclick="continueCalculation()">Continue Calculation</button>
-              <div id="customOutput" style="margin-top: 15px; font-weight: bold;"><br></div>
+              <div id="customOutput1" style="margin-top: 15px; font-weight: bold;"><br></div>
 `;
               document.getElementById('output').innerHTML += output;
             }
@@ -368,17 +368,18 @@ const barTable = [
               <input type="number" id="barSel"><br>
               <label for="barD">Bar Diameter (in): </label>
               <input type="number" id="barD"><br>
-              <button onclick="tieDesignCalc(${dimension})">Continue Calcualtion</button>
-              <div id="customOutput" style="margin-top: 15px; font-weight: bold;"><br></div>
+              <button onclick="tieDesignCalc()">Continue Calculation</button>
+              <div id="customOutput2" style="margin-top: 15px; font-weight: bold;"><br></div>
             `;
               document.getElementById('output').innerHTML += output;
             }
 
-    function tieDesignCalc(dimension) {
+    function tieDesignCalc() {
         let output='';
         let barSel = parseFloat(document.getElementById('barSel').value);
         let barQ = parseFloat(document.getElementById('barQ').value);
         let barD = parseFloat(document.getElementById('barD').value);
+        const dimension = parseFloat(document.getElementById('dimension').value);
 
         //assign bar tie diameter (#3 or #4 ties)
         let barTD;
