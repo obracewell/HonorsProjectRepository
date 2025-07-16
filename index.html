@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -300,6 +300,11 @@ const barTable = [
         
         function continueCalculation() {
             let output = '';
+            
+            // Save current input values before updating the output HTML
+            const savedDimension = document.getElementById('dimension')?.value || '';
+            const savedAg = document.getElementById('Ag')?.value || '';
+            
             const fc = parseFloat(document.getElementById('fc').value);
             const fy = parseFloat(document.getElementById('fy').value);
             const Pu = getPuValue();
@@ -315,7 +320,7 @@ const barTable = [
             return;
             }
             //calculate Astreq
-            let Astreq = (Pu - phi*alpha*0.85*0.001*fc*Ag)/(phi*alpha*(fy*0.001 - 0.85*0.001*fc));
+             let Astreq = ((Pu * 1000) / (phi * alpha) - 0.85 * fc * Ag) / (fy - 0.85 * fc);
             
             output += `\nRequired steel area, A<sub>st,req</sub>: ${Astreq.toFixed(2)} in²<br><br>`;
             output += `Bar Options:<br>`;
@@ -372,6 +377,9 @@ const barTable = [
               <div id="customOutput2" style="margin-top: 15px; font-weight: bold;"><br></div>
             `;
               document.getElementById('output').innerHTML += output;
+
+            document.getElementById('dimension').value = savedDimension;
+            document.getElementById('Ag').value = savedAg;
             }
 
     function tieDesignCalc() {
