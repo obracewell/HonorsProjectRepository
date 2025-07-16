@@ -431,6 +431,22 @@ const barTable = [
         output += `Using a Tie Confinement System<br>`;
         output += `Tie Spacing is every ${S.toFixed(0)} inches<br><br>`;
 
+        // --- Display image based on number of bars ---
+        let imageURL = "";
+        if (barQ === 4) {
+            imageURL = "https://example.com/4bars.png";
+        } else if (barQ === 6) {
+            imageURL = "https://example.com/6bars.png";
+        } else if (barQ === 8) {
+            imageURL = "https://example.com/8bars.png";
+        }
+
+    if (imageURL !== "") {
+        output += `<img src="${imageURL}" alt="${barQ} bars tie diagram" class="centered-img" style="width: 280px; margin-top: 10px;"><br>`;
+    } else {
+        output += `<span class="error">No image available for ${barQ} bars.</span><br>`;
+    }
+
         output = `<div style="margin-top: 15px;">${output}</div>`;
         document.getElementById('output').innerHTML += output;
 
