@@ -255,8 +255,8 @@ const barTable = [
         function performAgSelect() {
             // Get input values
             const fc = parseFloat(document.getElementById('fc').value);
-            const fy = parseFloat(document.getElementById('fy').value);
-            const Pu = getPuValue() *1000;
+            const fy = parseFloat(document.getElementById('fy').value) / 100;
+            const Pu = getPuValue();
             const rhoi = parseFloat(document.getElementById('rhoi').value);
             const phi = 0.65; //strength reduction factor
             const alpha = 0.8; //column interaction coefficient
@@ -270,7 +270,7 @@ const barTable = [
             let output = `<p class="success">Design:</p><br><br>`;
             
             //Calculate Agreq
-            const Agreq = Pu / (phi*alpha*(0.0085*fc*(1-0.01*rhoi)+0.001*fy*0.01*rhoi));
+            const Agreq = (Pu*1000) / (phi*alpha*(0.85*fc*(1-rhoi) + fy*rhoi);
                         
             //Calculate and show Ag options
             const side = Math.sqrt(Agreq);
