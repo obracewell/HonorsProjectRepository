@@ -21,7 +21,7 @@
 
     .card {
       border:1px solid #e2e8f0; border-radius:12px; padding:18px; margin:16px auto; background:#fff;
-      max-width:800px; text-align:center;
+      max-width:800px; text-align:left; /* ← left-justify intro text */
     }
 
     /* Accordions */
@@ -49,13 +49,20 @@
 
     .panel { padding:0 16px 14px; }
 
-    /* Single-line "variable = number" layout */
-    .kv { margin:12px 0; }
-    .kv dt, .kv dd { display:inline; font-family: inherit; }
-    .kv dt { font-weight:600; color:#475569; }
-    .kv dt::after { content:" = "; margin:0 .35rem; }
-    .kv dd::after { content:""; display:block; }
-    @media (max-width:700px){ .kv { font-size:.98rem; } }
+    /* Back to two-column rows: variable | value
+       Keep same font; tighten spacing for readability */
+    .kv {
+      display:grid;
+      grid-template-columns: minmax(160px, 1fr) minmax(120px, auto);
+      gap: 6px 16px;             /* tighter than before */
+      margin:12px 0;
+      align-items:center;
+    }
+    .kv dt { margin:0; font-weight:600; color:#475569; font-family: inherit; }
+    .kv dd { margin:0; font-family: inherit; } /* ensure same font for numbers */
+    @media (max-width:700px){
+      .kv { grid-template-columns: 1fr 1fr; }  /* stacks nicely but still side-by-side */
+    }
 
     .section-note { font-size:.95rem; color:#475569; text-align:center; }
   </style>
@@ -73,7 +80,7 @@
 
   <!-- MAIN CONTENT -->
   <div class="page-content">
-    <h1>About RC Calculators</h1>
+    <h1>About These RC Calculators</h1>
 
     <div class="card">
       <p>
@@ -96,18 +103,17 @@
     </div>
 
     <h2>Getting Started? Try these Test Values</h2>
-    <p class="section-note">Open a section and copy the values into the corresponding calculator.</p>
-
+    
     <!-- 1) SRB Analysis — Beam Analysis color -->
     <details>
       <summary><span class="badge badge-beam-analysis">Analysis</span> SRB (Singly Reinforced Beam)</summary>
       <div class="panel">
         <dl class="kv">
-          <dt>f’c</dt><dd>5000 psi</dd>
-          <dt>fy</dt><dd>60000 psi</dd>
-          <dt>As</dt><dd>3.61 in²</dd>
-          <dt>d</dt><dd>22 in</dd>
-          <dt>b</dt><dd>12 in</dd>
+          <dt>f’<sub>c</sub></dt><dd>= 5000 psi</dd>
+          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
+          <dt>A<sub>s</sub></dt><dd>= 3.61 in²</dd>
+          <dt>d</dt><dd>= 22 in</dd>
+          <dt>b</dt><dd>= 12 in</dd>
         </dl>
       </div>
     </details>
@@ -117,13 +123,13 @@
       <summary><span class="badge badge-beam-analysis">Analysis</span> T‑Beam</summary>
       <div class="panel">
         <dl class="kv">
-          <dt>f’c</dt><dd>4000 psi</dd>
-          <dt>fy</dt><dd>60000 psi</dd>
-          <dt>As</dt><dd>4#14</dd>
-          <dt>d</dt><dd>24 in</dd>
-          <dt>bw</dt><dd>16 in</dd>
-          <dt>beff</dt><dd>36 in</dd>
-          <dt>hf</dt><dd>3 in</dd>
+          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
+          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
+          <dt>A<sub>s</sub></dt><dd>= 4#14</dd>
+          <dt>d</dt><dd>= 24 in</dd>
+          <dt>b<sub>w</sub></dt><dd>= 16 in</dd>
+          <dt>b<sub>eff</sub></dt><dd>= 36 in</dd>
+          <dt>h<sub>f</sub></dt><dd>= 3 in</dd>
         </dl>
       </div>
     </details>
@@ -133,13 +139,13 @@
       <summary><span class="badge badge-beam-analysis">Analysis</span> DRB (Doubly Reinforced Beam)</summary>
       <div class="panel">
         <dl class="kv">
-          <dt>f’c</dt><dd>4000 psi</dd>
-          <dt>fy</dt><dd>60000 psi</dd>
-          <dt>As</dt><dd>4#11 in 1 row</dd>
-          <dt>As’</dt><dd>4#9</dd>
-          <dt>d</dt><dd>28 in</dd>
-          <dt>d’</dt><dd>2.5 in</dd>
-          <dt>b</dt><dd>16 in</dd>
+          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
+          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
+          <dt>A<sub>s</sub></dt><dd>= 4#11</dd>
+          <dt>A'<sub>s</sub></dt><dd>= 4#9</dd>
+          <dt>d</dt><dd>= 28 in</dd>
+          <dt>d’</dt><dd>= 2.5 in</dd>
+          <dt>b</dt><dd>= 16 in</dd>
         </dl>
       </div>
     </details>
@@ -149,11 +155,11 @@
       <summary><span class="badge badge-beam-design">Design</span> SRB</summary>
       <div class="panel">
         <dl class="kv">
-          <dt>f’c</dt><dd>4000 psi</dd>
-          <dt>fy</dt><dd>60000 psi</dd>
-          <dt>d</dt><dd>25.5 in</dd>
-          <dt>b</dt><dd>14 in</dd>
-          <dt>Mu</dt><dd>450 k·ft</dd>
+          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
+          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
+          <dt>d</dt><dd>= 25.5 in</dd>
+          <dt>b</dt><dd>= 14 in</dd>
+          <dt>M<sub>u</sub></dt><dd>= 450 k·ft</dd>
         </dl>
       </div>
     </details>
@@ -163,13 +169,13 @@
       <summary><span class="badge badge-beam-design">Design</span> T‑Beam</summary>
       <div class="panel">
         <dl class="kv">
-          <dt>f’c</dt><dd>4000 psi</dd>
-          <dt>fy</dt><dd>60000 psi</dd>
-          <dt>d</dt><dd>30 in</dd>
-          <dt>bw</dt><dd>12 in</dd>
-          <dt>beff</dt><dd>48 in</dd>
-          <dt>hf</dt><dd>4 in</dd>
-          <dt>Mu</dt><dd>1040 k·ft</dd>
+          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
+          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
+          <dt>d</dt><dd>= 30 in</dd>
+          <dt>b<sub>w</sub></dt><dd>= 12 in</dd>
+          <dt>b<sub>eff</sub></dt><dd>= 48 in</dd>
+          <dt>h<sub>f</sub></dt><dd>= 4 in</dd>
+          <dt>M<sub>u</sub></dt><dd>= 1040 k·ft</dd>
         </dl>
       </div>
     </details>
@@ -179,12 +185,12 @@
       <summary><span class="badge badge-beam-design">Design</span> DRB</summary>
       <div class="panel">
         <dl class="kv">
-          <dt>f’c</dt><dd>4000 psi</dd>
-          <dt>fy</dt><dd>60000 psi</dd>
-          <dt>d</dt><dd>26 in</dd>
-          <dt>d’</dt><dd>3 in</dd>
-          <dt>b</dt><dd>14 in</dd>
-          <dt>Mu</dt><dd>900 k·ft</dd>
+          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
+          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
+          <dt>d</dt><dd>= 26 in</dd>
+          <dt>d’</dt><dd>= 3 in</dd>
+          <dt>b</dt><dd>= 14 in</dd>
+          <dt>M<sub>u</sub></dt><dd>= 900 k·ft</dd>
         </dl>
       </div>
     </details>
@@ -194,10 +200,10 @@
       <summary><span class="badge badge-column-design">Design</span> Square Column</summary>
       <div class="panel">
         <dl class="kv">
-          <dt>f’c</dt><dd>4000 psi</dd>
-          <dt>fy</dt><dd>60000 psi</dd>
-          <dt>Pu</dt><dd>1160 k</dd>
-          <dt>ρ (Rho)</dt><dd>3%</dd>
+          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
+          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
+          <dt>P<sub>u</sub></dt><dd>= 1160 k</dd>
+          <dt>ρ</dt><dd>= 3%</dd>
         </dl>
       </div>
     </details>
@@ -207,11 +213,11 @@
       <summary><span class="badge badge-column-design">Design</span> Circular Column</summary>
       <div class="panel">
         <dl class="kv">
-          <dt>f’c</dt><dd>4000 psi</dd>
-          <dt>fy</dt><dd>60000 psi</dd>
-          <dt>PD</dt><dd>400 k</dd>
-          <dt>PL</dt><dd>250 k</dd>
-          <dt>ρ (Rho)</dt><dd>3%</dd>
+          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
+          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
+          <dt>P<sub>D</sub></dt><dd>= 400 k</dd>
+          <dt>P<sub>L</sub></dt><dd>= 250 k</dd>
+          <dt>ρ</dt><dd>= 3%</dd>
           <dt>Confinement</dt><dd>Spiral</dd>
         </dl>
       </div>
