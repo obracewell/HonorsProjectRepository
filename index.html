@@ -49,19 +49,16 @@
 
     .panel { padding:0 16px 14px; }
 
-    /* Back to two-column rows: variable | value
-       Keep same font; tighten spacing for readability */
     .kv {
       display:grid;
-      grid-template-columns: minmax(160px, 1fr) minmax(120px, auto);
-      gap: 6px 16px;             /* tighter than before */
+      grid-template-columns: 20% 80%;
+      gap: 6px 18px;             
       margin:12px 0;
-      align-items:center;
     }
     .kv dt { margin:0; font-weight:600; color:#475569; font-family: inherit; }
-    .kv dd { margin:0; font-family: inherit; } /* ensure same font for numbers */
+    .kv dd { margin:0; font-family: inherit; text-align: left } /* ensure same font for numbers */
     @media (max-width:700px){
-      .kv { grid-template-columns: 1fr 1fr; }  /* stacks nicely but still side-by-side */
+      .kv { grid-template-columns: 1fr 1fr; }  
     }
 
     .section-note { font-size:.95rem; color:#475569; text-align:center; }
@@ -80,7 +77,7 @@
 
   <!-- MAIN CONTENT -->
   <div class="page-content">
-    <h1>About These RC Calculators</h1>
+    <h1>About the RC Calculators</h1>
 
     <div class="card">
       <p>
@@ -106,7 +103,7 @@
     
     <!-- 1) SRB Analysis — Beam Analysis color -->
     <details>
-      <summary><span class="badge badge-beam-analysis">Analysis</span> SRB (Singly Reinforced Beam)</summary>
+      <summary><span class="badge badge-beam-analysis">Analysis</span> SRB </summary>
       <div class="panel">
         <dl class="kv">
           <dt>f’<sub>c</sub></dt><dd>= 5000 psi</dd>
@@ -136,7 +133,7 @@
 
     <!-- 3) DRB Analysis — Beam Analysis color -->
     <details>
-      <summary><span class="badge badge-beam-analysis">Analysis</span> DRB (Doubly Reinforced Beam)</summary>
+      <summary><span class="badge badge-beam-analysis">Analysis</span> DRB </summary>
       <div class="panel">
         <dl class="kv">
           <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
