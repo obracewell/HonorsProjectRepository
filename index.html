@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RC Calculators</title>
+    <title>Honors Project Repository</title>
     <style>
-        body {
+    body {
       font-family: Arial, sans-serif;
       text-align: center;
       background-color: #f9f9f9;
@@ -27,13 +27,17 @@
     .large-button-wrapper {
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       gap: 100px;
       margin-top: 30px;
       flex-wrap: nowrap;
     }
 
-    .large-button-wrapper a img {
+    .button-item {
+      text-align: center;
+    }
+
+    .button-item img {
       width: 400px;
       height: 300px;
       object-fit: contain;
@@ -41,16 +45,24 @@
       border: none;
     }
 
-    .large-button-wrapper a img:hover {
+    .button-item img:hover {
       transform: scale(1.04);
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
+
+    .button-label {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* Optional: stack buttons on narrow screens */
     @media (max-width: 950px) {
       .large-button-wrapper {
         flex-wrap: wrap;
         gap: 30px;
       }
-      .large-button-wrapper a img {
+      .button-item img {
         width: 100%;
         max-width: 400px;
         height: auto;
@@ -59,7 +71,6 @@
   </style>
 </head>
 <body>
-         
 
   <h1>Olivia Bracewell's Honors Project Repository</h1>
 
@@ -71,15 +82,20 @@
   </p>
 
   <div class="large-button-wrapper">
-    <a href="https://obracewell.github.io/RCColumnDesignCalculator-Square/">
-      <img src="https://raw.githubusercontent.com/obracewell/RCBeamCalculator/refs/heads/main/assets/squareCbutfinal.png" alt="Square Column Button">
-    </a>
-    <a href="https://obracewell.github.io/RCColumnDesignCalculator-Circle/">
-      <img src="https://raw.githubusercontent.com/obracewell/RCBeamCalculator/refs/heads/main/assets/circleCbutfinal.png" alt="Circle Column Button">
-    </a>
+    <div class="button-item">
+      <a href="https://obracewell.github.io/RCColumnDesignCalculator-Square/">
+        <img src="https://raw.githubusercontent.com/obracewell/RCBeamCalculator/refs/heads/main/assets/squareCbutfinal.png" alt="Square Column Button">
+      </a>
+      <div class="button-label">Project Report</div>
+    </div>
+    <div class="button-item">
+      <a href="https://obracewell.github.io/RCColumnDesignCalculator-Circle/">
+        <img src="https://raw.githubusercontent.com/obracewell/RCBeamCalculator/refs/heads/main/assets/circleCbutfinal.png" alt="Circle Column Button">
+      </a>
+      <div class="button-label">Calculator Website</div>
+    </div>
   </div>
 
+</body>        
 
-
-</body>
 </html>
