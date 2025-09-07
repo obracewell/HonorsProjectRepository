@@ -1,286 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RC Calculators – Info</title>
-  <style>
-    .site-header {
-            background-color: #003366;
-            color: #f9f9f9;
-            margin-bottom: 20px;
-        }
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 15px;
-        }
-        .image-button {
-            display: inline-block;
-            padding: 2px;
-            border-radius: 8px;
-            background-color: white;
-            transition:background-color 0.2s;
-            text-decoration: none;
-        }
-        .button-image {
-            height: 45px;
-            width: 45px;
-            object-fit: contain;
-            vertical-align: middle;
-            border-radius: 8px;
-        }
-        .button-group {
-            display: flex;
-            gap: 15px; 
-        }
-        .image-button:hover {
-            background-color: #e0e0e0;
-        }
-        .site-footer {
-            background-color: #f3a26d;
-            color: white;
-            text-align: center;
-            padding: 10px 10px;
-            margin-top: 240px;
-            font-size: 14px;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RC Calculators</title>
+    <style>
         body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                background-color: #f9f9f9;
-                margin-bottom: 20px;
-            }
-    
-    .page-content { max-width:960px; margin:auto; padding:0 20px; }
-    h1 { font-size:clamp(1.6rem,2vw,2rem); margin:0 0 12px; text-align:center; }
-    h2 { font-size:clamp(1.2rem,1.5vw,1.4rem); margin:28px 0 10px; text-align:left; }
-
-    .card {
-      border:1px solid #e2e8f0; border-radius:12px; padding:18px; margin:16px auto; background:#fff;
-      max-width:800px; text-align:left; /* ← left-justify intro text */
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
     }
 
-    /* Accordions */
-    details { border:1px solid #e2e8f0; border-radius:12px; background:#fff; margin:10px 0; overflow:hidden; }
-    summary {
-      cursor:pointer; list-style:none; padding:14px 16px; font-weight:600; display:flex; align-items:center; gap:10px;
-    }
-    summary::-webkit-details-marker { display:none; }
-    /* Right-edge caret */
-    summary::after { content:"▼"; margin-left:auto; transition: transform .2s ease; }
-    details[open] summary::after { transform: rotate(180deg); }
-
-    /* Badge (themeable via CSS variables) */
-    .badge {
-      --badge-bg:#eef2ff;
-      --badge-border:#c7d2fe;
-      --badge-fg:#1f2937;
-      font-size:.75rem; font-weight:600; padding:2px 8px; border-radius:9999px;
-      background: var(--badge-bg); border:1px solid var(--badge-border); color: var(--badge-fg);
-    }
-    /* Your color scheme */
-    .badge-beam-analysis { --badge-bg:#AEC9A3; --badge-border:#AEC9A3; --badge-fg:#0f172a; }
-    .badge-beam-design  { --badge-bg:#B6CCD7; --badge-border:#B6CCD7; --badge-fg:#0f172a; }
-    .badge-column-design{ --badge-bg:#E5B9B9; --badge-border:#E5B9B9; --badge-fg:#0f172a; }
-
-    .panel { padding:0 16px 14px; }
-
-    .kv {
-      display:grid;
-      grid-template-columns: 20% 80%;
-      gap: 6px 18px;             
-      margin:12px 0;
-    }
-    .kv dt { margin:0; font-weight:600; color:#475569; font-family: inherit; }
-    .kv dd { margin:0; font-family: inherit; text-align: left } /* ensure same font for numbers */
-    @media (max-width:700px){
-      .kv { grid-template-columns: 1fr 1fr; }  
+    h1 {
+      margin-bottom: 20px;
     }
 
-    .section-note { font-size:.95rem; color:#475569; text-align:center; }
+    p {
+      max-width: 900px;
+      margin: 0 auto 20px auto;
+      text-align: left;
+    }
+
+    /* Two large buttons side-by-side, centered with 100px gap */
+    .large-button-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 100px;
+      margin-top: 30px;
+      flex-wrap: nowrap;
+    }
+
+    .large-button-wrapper a img {
+      width: 400px;
+      height: 300px;
+      object-fit: contain;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+    }
+
+    .large-button-wrapper a img:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    @media (max-width: 950px) {
+      .large-button-wrapper {
+        flex-wrap: wrap;
+        gap: 30px;
+      }
+      .large-button-wrapper a img {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+      }
+    }
   </style>
 </head>
 <body>
-  <header class="site-header">
-        <div class="header-content">
-            <div>
-              <h1>REINFORCED CONCRETE CALCULATOR</h1>
-          </div>
-          <div class="button-group">
-            <a href="https://obracewell.github.io/RCCcalculator-Info/" class="image-button" title="Info Page">
-                <img src="https://raw.githubusercontent.com/obracewell/RCBeamCalculator/refs/heads/main/assets/infobuttonn.png" 
-                     alt="Info Button Icon" class="button-image">
-            </a>
-            <a href="https://obracewell.github.io/RCBeamCalculator/" class="image-button" title="Home">
-                <img src="https://raw.githubusercontent.com/obracewell/RCBeamCalculator/refs/heads/main/assets/homebuttonn.png" 
-                     alt="Home Button Icon" class="button-image">
-            </a>
-            </div> 
-        </div>
-    </header>
+         
 
-  <!-- MAIN CONTENT -->
-  <div class="page-content">
-    <h1>About the Reinforced Concrete Calculator</h1>
+  <h1>Olivia Bracewell's Honors Project Repository</h1>
 
-    <div class="card">
-      <p>
-        This website features interactive calculators designed to support reinforced concrete (RC) beam and column design and analysis.
-        It includes tools for three common RC beam types: singly reinforced beams (SRB), T-beams, and doubly reinforced beams (DRB).
-        It also provides design calculators for square and circular RC columns. Reference tables commonly used in RC analysis and design are provided.
-      </p>
-      <p>
-        For the beam analysis calculators, users can input design parameters and instantly visualize how those values affect beam strength.
-        The goal is to provide an intuitive way to understand structural behavior and the impact of design decisions.
-      </p>
-      <p>
-        For the beam design calculators, users can input the known design parameters and design the reinforcing steel for their beam.
-        The goal is to show that multiple options will produce the desired strength and provide a starting point for exploring optimized designs.
-      </p>
-      <p>
-        For the column design calculators, users can select parameters to determine the required cross-sectional concrete area and reinforcing steel for square or circular columns.
-        These tools guide the selection of bar arrangements that satisfy design requirements and allow users to explore viable design options.
-      </p>
-    </div>
+  <p><strong>Thank you for checking out this page!</strong></p>
+  <p>Below are links to my honors project report and the final product.</p>
+  <p>
+    The website provides interactive calculators for the design and analysis of reinforced concrete beams and columns. 
+    Tools are available for singly reinforced beams (SRB), doubly reinforced beams (DRB), T-beams, and square and circular columns.
+  </p>
 
-    <h2>Getting Started? Try these Test Values</h2>
-    
-    <!-- 1) SRB Analysis — Beam Analysis color -->
-    <details>
-      <summary><span class="badge badge-beam-analysis">Analysis</span> SRB </summary>
-      <div class="panel">
-        <dl class="kv">
-          <dt>f’<sub>c</sub></dt><dd>= 5000 psi</dd>
-          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
-          <dt>A<sub>s</sub></dt><dd>= 3.61 in²</dd>
-          <dt>d</dt><dd>= 22 in</dd>
-          <dt>b</dt><dd>= 12 in</dd>
-        </dl>
-      </div>
-    </details>
-
-    <!-- 2) T-Beam Analysis — Beam Analysis color -->
-    <details>
-      <summary><span class="badge badge-beam-analysis">Analysis</span> T‑Beam</summary>
-      <div class="panel">
-        <dl class="kv">
-          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
-          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
-          <dt>A<sub>s</sub></dt><dd>= 4#14</dd>
-          <dt>d</dt><dd>= 24 in</dd>
-          <dt>b<sub>w</sub></dt><dd>= 16 in</dd>
-          <dt>b<sub>eff</sub></dt><dd>= 36 in</dd>
-          <dt>h<sub>f</sub></dt><dd>= 3 in</dd>
-        </dl>
-      </div>
-    </details>
-
-    <!-- 3) DRB Analysis — Beam Analysis color -->
-    <details>
-      <summary><span class="badge badge-beam-analysis">Analysis</span> DRB </summary>
-      <div class="panel">
-        <dl class="kv">
-          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
-          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
-          <dt>A<sub>s</sub></dt><dd>= 4#11</dd>
-          <dt>A'<sub>s</sub></dt><dd>= 4#9</dd>
-          <dt>d</dt><dd>= 28 in</dd>
-          <dt>d’</dt><dd>= 2.5 in</dd>
-          <dt>b</dt><dd>= 16 in</dd>
-        </dl>
-      </div>
-    </details>
-
-    <!-- 4) SRB Design — Beam Design color -->
-    <details>
-      <summary><span class="badge badge-beam-design">Design</span> SRB</summary>
-      <div class="panel">
-        <dl class="kv">
-          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
-          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
-          <dt>d</dt><dd>= 25.5 in</dd>
-          <dt>b</dt><dd>= 14 in</dd>
-          <dt>M<sub>u</sub></dt><dd>= 450 k·ft</dd>
-        </dl>
-      </div>
-    </details>
-
-    <!-- 5) T-Beam Design — Beam Design color -->
-    <details>
-      <summary><span class="badge badge-beam-design">Design</span> T‑Beam</summary>
-      <div class="panel">
-        <dl class="kv">
-          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
-          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
-          <dt>d</dt><dd>= 30 in</dd>
-          <dt>b<sub>w</sub></dt><dd>= 12 in</dd>
-          <dt>b<sub>eff</sub></dt><dd>= 48 in</dd>
-          <dt>h<sub>f</sub></dt><dd>= 4 in</dd>
-          <dt>M<sub>u</sub></dt><dd>= 1040 k·ft</dd>
-        </dl>
-      </div>
-    </details>
-
-    <!-- 6) DRB Design — Beam Design color -->
-    <details>
-      <summary><span class="badge badge-beam-design">Design</span> DRB</summary>
-      <div class="panel">
-        <dl class="kv">
-          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
-          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
-          <dt>d</dt><dd>= 26 in</dd>
-          <dt>d’</dt><dd>= 3 in</dd>
-          <dt>b</dt><dd>= 14 in</dd>
-          <dt>M<sub>u</sub></dt><dd>= 900 k·ft</dd>
-        </dl>
-      </div>
-    </details>
-
-    <!-- 7) Square Column Design — Column Design color -->
-    <details>
-      <summary><span class="badge badge-column-design">Design</span> Square Column</summary>
-      <div class="panel">
-        <dl class="kv">
-          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
-          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
-          <dt>P<sub>u</sub></dt><dd>= 1160 k</dd>
-          <dt>ρ</dt><dd>= 3%</dd>
-        </dl>
-      </div>
-    </details>
-
-    <!-- 8) Circular Column Design — Column Design color -->
-    <details>
-      <summary><span class="badge badge-column-design">Design</span> Circular Column</summary>
-      <div class="panel">
-        <dl class="kv">
-          <dt>f’<sub>c</sub></dt><dd>= 4000 psi</dd>
-          <dt>f<sub>y</sub></dt><dd>= 60000 psi</dd>
-          <dt>P<sub>D</sub></dt><dd>= 400 k</dd>
-          <dt>P<sub>L</sub></dt><dd>= 250 k</dd>
-          <dt>ρ</dt><dd>= 3%</dd>
-          <dt>Confinement</dt><dd>Spiral</dd>
-        </dl>
-      </div>
-    </details>
+  <div class="large-button-wrapper">
+    <a href="https://obracewell.github.io/RCColumnDesignCalculator-Square/">
+      <img src="https://raw.githubusercontent.com/obracewell/RCBeamCalculator/refs/heads/main/assets/squareCbutfinal.png" alt="Square Column Button">
+    </a>
+    <a href="https://obracewell.github.io/RCColumnDesignCalculator-Circle/">
+      <img src="https://raw.githubusercontent.com/obracewell/RCBeamCalculator/refs/heads/main/assets/circleCbutfinal.png" alt="Circle Column Button">
+    </a>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <p>Reinforced Concrete Calculator created by Olivia Bracewell, UF Herbert Wertheim College of Engineering</p>
-  </footer>
 
-  <!-- Single-open accordion behavior -->
-  <script>
-    document.querySelectorAll('details').forEach(d=>{
-      d.addEventListener('toggle', ()=>{
-        if(d.open){
-          document.querySelectorAll('details').forEach(o=>{ if(o!==d) o.removeAttribute('open'); });
-        }
-      });
-    });
-  </script>
+
 </body>
 </html>
